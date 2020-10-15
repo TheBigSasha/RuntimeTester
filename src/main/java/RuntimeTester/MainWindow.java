@@ -26,21 +26,21 @@ public class MainWindow extends Application {
         primaryStage.setTitle("Runtime Efficiency Wizard - <3 sashaphoto.ca Tweet Visualizer");
         primaryStage.setScene(new Scene(root, 900, 800));
         primaryStage.setResizable(false);
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                if (Desktop.isDesktopSupported()) {
-                    try {
-                        Desktop.getDesktop().browse(new URI("https://sashaphoto.ca/COMP250ThankYou/"));
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    } catch (URISyntaxException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-                System.exit(0);
-            }
-        });
+//        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+//            @Override
+//            public void handle(WindowEvent windowEvent) {
+//                if (Desktop.isDesktopSupported()) {
+//                    try {
+//                        Desktop.getDesktop().browse(new URI("https://sashaphoto.ca/COMP250ThankYou/"));
+//                    } catch (IOException e1) {
+//                        e1.printStackTrace();
+//                    } catch (URISyntaxException e1) {
+//                        e1.printStackTrace();
+//                    }
+//                }
+//                System.exit(0);
+//            }
+//        });
         primaryStage.show();
     }
 
