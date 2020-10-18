@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Controller implements Initializable {
-    private TwitterBenchmark tBM;
+    //private TwitterBenchmark tBM;
     private ScheduledExecutorService scheduledExecutorService;
     //BENCHMARKING
     @FXML
@@ -75,6 +75,11 @@ public class Controller implements Initializable {
                 GC_Twit_ConstructorII, GC_Twit_TrendingII));
         addListeners();
         initalizeGraph();
+        try {
+            reflexiveGetBenchmarkables();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -108,7 +113,7 @@ public class Controller implements Initializable {
 
     private void reflexiveGetBenchmarkables() throws IOException {
         ArrayList<Method> customBenchmarks = new ArrayList<>();
-        for(ClassPath.ClassInfo c : ClassPath.from(this.getClass().getClassLoader()).getAllClasses()){
+        for(ClassPath.ClassInfo c : ClassPath.from(this.getClass().getClassLoader()).getTopLevelClasses()){     //TODO: it no workie :(
             for(Method m : c.load().getMethods()){
                 Annotation[] annotations = m.getAnnotations();
                 if(annotations.length == 0) continue;
@@ -230,7 +235,7 @@ public class Controller implements Initializable {
             return BM.timedValuesReference(count);
         } else if (input.equals(GC_J_Keys.getText())) {
             return BM.timedKeysReference(count);
-        } else */if (input.equals(GC_Twit_Trending.getText())) {
+        } else if (input.equals(GC_Twit_Trending.getText())) {
             return tBM.timedTwitterTrending(count, (int) (count * GC_StopWordFactor.getValue()));
         } else if (input.equals(GC_Twit_Constructor.getText())) {
             return tBM.timedTwitterConstructor(count, (int) (count * GC_StopWordFactor.getValue()));
@@ -244,7 +249,7 @@ public class Controller implements Initializable {
             return tBM.timedTwitterConstructor(count, (int) (count * GC_StopWordFactorII.getValue()));
         } else if (input.equals(GC_Twit_TrendingII.getText())) {
             return tBM.timedTwitterTrending(count, (int) (count * GC_StopWordFactorII.getValue()));
-        } else {
+        } else */{
             return 0L;
         }
     }

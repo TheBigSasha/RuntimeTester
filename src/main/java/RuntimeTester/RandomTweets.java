@@ -88,12 +88,12 @@ public class RandomTweets extends Random {
             } else if (choice.toLowerCase().contains("date")) {
                 System.out.println(test.nextDate());
             } else if (choice.toLowerCase().contains("tweet")) {
-                System.out.println(test.nextTweet());
+                //System.out.println(test.nextTweet());
             } else if (choice.toLowerCase().contains("user")) {
                 System.out.println(test.nextUserName());
-            } else if (choice.toLowerCase().contains("at")) {
+            }/* else if (choice.toLowerCase().contains("at")) {
                 System.out.println(test.nextTweet(true));
-            }
+            }*/
         }
     }
 
@@ -318,18 +318,18 @@ public class RandomTweets extends Random {
      *
      * @return a tweet.
      */
-    public Tweet nextTweet() {
+    /*public Tweet nextTweet() {
         String name = nextUserName();
         pastUsers.add(name);
         return new Tweet(name, nextDate(), nextContent());
     }
 
-    /**
+    *//**
      * Generates a tweet which at's a user.
      *
      * @param a to at or not to at
      * @return a Tweet which may at a particular user.
-     */
+     *//*
     public Tweet nextTweet(boolean a) {
         try {
             String name = nextUserName();
@@ -339,7 +339,7 @@ public class RandomTweets extends Random {
         } catch (Exception e) {
             return nextTweet();
         }
-    }
+    }*/
 
     /**
      * Gets a bit of content
@@ -569,14 +569,17 @@ public class RandomTweets extends Random {
         sb.append(endCode);
         return sb.toString();
     }
+/*
 
-    /**
+    */
+/**
      * Generates an array of randomized tweets to user specification.
      *
      * @param howMany the number of tweets to generate
      * @param at      to at or not to at
      * @return an array of Tweet which matches the above conditions
-     */
+     *//*
+
     public Tweet[] nextTweets(int howMany, boolean at) {
 
         Tweet[] output = new Tweet[howMany];
@@ -589,31 +592,38 @@ public class RandomTweets extends Random {
         }
         return output;
     }
+*/
+/*
 
-    /**
+    */
+/**
      * Generates a randomized tweet whose content contains a keyword and which at's a user.
      *
      * @param keyword word this tweet must contain
      * @param toAt    whom this tweet must at
      * @return a tweet that matches the conditions specified
-     */
+     *//*
+
     public Tweet nextTweet(String keyword, String toAt) {
         String name = nextUserName();
         pastUsers.add(name);
         return new Tweet(name, nextDate(), nextContent(toAt, keyword));
     }
 
-    /**
+    */
+/**
      * Generates a randomized tweet whose content contains a keyword.
      *
      * @param keyword A word this tweet must contain
      * @return a tweet that matches the conditions specified
-     */
+     *//*
+
     public Tweet nextTweet(String keyword) {
         String name = nextUserName();
         pastUsers.add(name);
         return new Tweet(name, nextDate(), nextContent(keyword));
     }
+*/
 
     /**
      * Gets a bit of content for a tweet which has a keyword.
@@ -625,7 +635,9 @@ public class RandomTweets extends Random {
         return nextSongLyricWithKeyword(keyword);
     }
 
-    /**
+/*
+    */
+/**
      * Generates an array of Tweet of a specified size where each Tweet matches the following conditions:
      * <p>
      * Contains a common keyword <code>keyword</code>
@@ -635,7 +647,8 @@ public class RandomTweets extends Random {
      * @param at      Whether or not to include at's
      * @param keyword A keyword which each tweet must contain
      * @return an array of Tweet matching the above conditions
-     */
+     *//*
+
     public Tweet[] nextTweets(int howMany, boolean at, String keyword) {
         Tweet[] output = new Tweet[howMany];
         for (int i = 0; i < output.length; i++) {
@@ -649,6 +662,7 @@ public class RandomTweets extends Random {
         }
         return output;
     }
+*/
 
     /**
      * If there have been tweets made before, return a user who has tweeted. Else, return a newly generated username.
@@ -687,14 +701,14 @@ public class RandomTweets extends Random {
             return output;
         }
     }
-
+/*
     public Twitter nextTwitter(int numTweets, int numStopWords) {
         ArrayList<String> toAddStopWords;
         toAddStopWords = nextStopWords(numStopWords);
         ArrayList<Tweet> toAddTweets;
         toAddTweets = new ArrayList<>(Arrays.asList(nextTweets(numTweets, true)));
         return new Twitter(toAddTweets, toAddStopWords);
-    }
+    }*/
 
     public String sing(String keyword) {
         StringBuilder output = new StringBuilder();
@@ -714,15 +728,15 @@ public class RandomTweets extends Random {
         return output.toString();
     }
 
-    private ArrayList<Tweet> tweetsOf(ArrayList<String> strings) {
+  /*  private ArrayList<Tweet> tweetsOf(ArrayList<String> strings) {
         ArrayList<Tweet> output = new ArrayList<>();
         for (String s : strings) {
             output.add(new Tweet(nextUserName(), nextDate(), s));
         }
         return output;
-    }
+    }*/
 
-    public String nextTrend(int i, int stopWordFator) {
+  /*  public String nextTrend(int i, int stopWordFator) {
         Twitter t;
         switch (i) {
             case 0:
@@ -774,7 +788,7 @@ public class RandomTweets extends Random {
             counter++;
         }
         return output.toString();
-    }
+    }*/
 
     private List<String> parseHTML(Reader reader) throws IOException {
         List<String> lines = HTMLUtils.extractText(reader);
