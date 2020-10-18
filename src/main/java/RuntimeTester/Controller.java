@@ -120,6 +120,7 @@ public class Controller implements Initializable {
                             @Override
                             public void handle(ActionEvent event) {
                                 //TODO: add this method "m" to a run pool if the box is selected!
+                                //also check that it returns long and takes int as input
                             }
                         });
 
