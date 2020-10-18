@@ -141,9 +141,9 @@ public class Controller implements Initializable {
 
 
         // defining the axes
-        xAxis.setLabel("Size of HashTable");
+        xAxis.setLabel("Size of Dataset");
         xAxis.setAnimated(true);
-        yAxis.setLabel("Runtime (nano)");
+        yAxis.setLabel("Runtime (nanoseconds)");
         yAxis.setAnimated(false);
 
         // creating the line chart with two axis created above
@@ -154,7 +154,7 @@ public class Controller implements Initializable {
         HashMap<XYChart.Series<String, Number>, Long> plotsRunTime = new HashMap<XYChart.Series<String, Number>, Long>();
 
 
-        for (CheckBox box : toggles) {
+        for (CheckBox box : toggles) {  //TODO: do this better for reflection
             if (box.isSelected()) {
                 XYChart.Series<String, Number> series = new XYChart.Series<>();
                 series.setName(box.getText());  //TODO: Better naming
@@ -193,7 +193,7 @@ public class Controller implements Initializable {
         if (GC_TurboMode.isSelected()) {
             count *= GC_TurboFactor.getValue();
         }
-        if (input.equals(GC_FastSort.getText())) {
+      /*  if (input.equals(GC_FastSort.getText())) {
             return BM.timedSort(count);
         } else if (input.equals(GC_Remove.getText())) {
             return BM.timedRemove(count);
@@ -229,7 +229,7 @@ public class Controller implements Initializable {
             return BM.timedValuesReference(count);
         } else if (input.equals(GC_J_Keys.getText())) {
             return BM.timedKeysReference(count);
-        } else if (input.equals(GC_Twit_Trending.getText())) {
+        } else */if (input.equals(GC_Twit_Trending.getText())) {
             return tBM.timedTwitterTrending(count, (int) (count * GC_StopWordFactor.getValue()));
         } else if (input.equals(GC_Twit_Constructor.getText())) {
             return tBM.timedTwitterConstructor(count, (int) (count * GC_StopWordFactor.getValue()));
@@ -249,10 +249,10 @@ public class Controller implements Initializable {
     }
 
     private void enableDarkTheme() {
-        anchorPane.getStylesheets().add(" /COMP250_A4_W2020_Test_Visualizer_JFX/mondea_dark.css");
+        anchorPane.getStylesheets().add("/RuntimeTester/mondea_dark.css");
     }
 
     private void disableDarkTheme() {
-        anchorPane.getStylesheets().remove(" /COMP250_A4_W2020_Test_Visualizer_JFX/mondea_dark.css");
+        anchorPane.getStylesheets().remove("/RuntimeTester/mondea_dark.css");
     }
 }
