@@ -2,89 +2,57 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.text.Font?>
+<BorderPane fx:id="mainBorderView" stylesheets="mondea_dark.css" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="RuntimeTester.Controller">
+    <bottom>
+        <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="BOTTOM_CENTER" prefHeight="160">
+            <tabs>
+                <Tab text="Custom">
+                    <content>
+                        <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL">
+                            <children>
+                                <ButtonBar fx:id="reflexive_button_area"/>
+                            </children>
+                        </FlowPane>
+                    </content>
+                </Tab>
+                <Tab text="Settings">
+                    <content>
+                        <FlowPane alignment="CENTER" orientation="VERTICAL">
+                            <children>
+                                <Label alignment="CENTER" contentDisplay="CENTER" text="Turbo Factor"
+                                       textAlignment="CENTER"/>
+                                <Slider fx:id="GC_TurboFactor" max="5000.0" value="50.0"/>
+                                <CheckBox fx:id="GC_TurboMode" mnemonicParsing="false" text="Turbo Mode"/>
+                            </children>
+                        </FlowPane>
 
-<AnchorPane fx:id="anchorPane" stylesheets="mondea_dark.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RuntimeTester.Controller">
-   <BorderPane fx:id="mainBorderView">
-      <center>
-         <Pane fx:id="paneView" mouseTransparent="true" BorderPane.alignment="CENTER" />
-      </center>
-      <bottom>
-         <BorderPane BorderPane.alignment="CENTER">
-            <center>
-               <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="BOTTOM_CENTER">
-                  <tabs>
-                     <Tab text="Custom">
-                        <content>
-                           <AnchorPane>
-                              <children>
-                                 <FlowPane>
-                                    <children>
-                                       <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="50.0" prefWidth="900.0">
-                                          <children>
-                                             <ButtonBar fx:id="reflexive_button_area" />
-                                          </children>
-                                       </FlowPane>
-                                    </children>
-                                 </FlowPane>
-                              </children>
-                           </AnchorPane>
-                        </content>
-                     </Tab>
-                     <Tab text="Settings">
-                        <content>
-                           <AnchorPane>
-                              <children>
-                                 <FlowPane>
-                                    <children>
-                                       <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="70.0" prefWidth="900.0">
-                                          <children>
-                                             <Label text="Controls" textAlignment="CENTER">
-                                                <font>
-                                                   <Font name="Arial Black" size="15.0" />
-                                                </font>
-                                             </Label>
-                                             <ButtonBar>
-                                                <buttons>
-                                                   <FlowPane alignment="CENTER" layoutX="330.0" layoutY="10.0" orientation="VERTICAL" prefHeight="40.0">
-                                                      <children>
-                                                         <Label alignment="CENTER" contentDisplay="CENTER" text="Turbo Factor" textAlignment="CENTER" />
-                                                         <Slider fx:id="GC_TurboFactor" max="5000.0" value="50.0" />
-                                                         <CheckBox fx:id="GC_TurboMode" mnemonicParsing="false" text="Turbo Mode" />
-                                                      </children>
-                                                   </FlowPane>
-                                                </buttons>
-                                             </ButtonBar>
-                                          </children>
-                                       </FlowPane>
-                                    </children>
-                                 </FlowPane>
-                              </children>
-                           </AnchorPane>
-                        </content>
-                     </Tab>
-                  </tabs>
-               </TabPane>
-            </center>
-         </BorderPane>
-      </bottom>
-      <top>
-         <HBox BorderPane.alignment="CENTER">
+
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </bottom>
+    <top>
+        <HBox BorderPane.alignment="CENTER">
             <children>
-               <Label text="Runtime Efficiency Tester">
-                  <font>
-                     <Font size="25.0" />
-                  </font>
-               </Label>
-               <ButtonBar>
-                  <buttons>
-                     <Button fx:id="GC_Reset" mnemonicParsing="false" text="Reset" />
-                     <Button fx:id="GC_Help" mnemonicParsing="false" text="Help" />
-                     <Button fx:id="GC_Refresh" mnemonicParsing="false" text="Refresh" />
-                  </buttons>
-               </ButtonBar>
+                <Label text="Runtime Efficiency Tester">
+                    <font>
+                        <Font size="25.0"/>
+                    </font>
+                </Label>
+                <ButtonBar>
+                    <buttons>
+                        <Button fx:id="GC_Reset" mnemonicParsing="false" text="Reset"/>
+                        <Button fx:id="GC_Help" mnemonicParsing="false" text="Help"/>
+                        <Button fx:id="GC_Refresh" mnemonicParsing="false" text="Refresh"/>
+                    </buttons>
+                </ButtonBar>
             </children>
-         </HBox>
-      </top>
-   </BorderPane>
-</AnchorPane>
+        </HBox>
+    </top>
+    <right>
+
+    </right>
+</BorderPane>

@@ -48,16 +48,11 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Controller implements Initializable {
     @FXML
     public BorderPane mainBorderView;
-    //private TwitterBenchmark tBM;
     private ScheduledExecutorService scheduledExecutorService;
     private HashMap<String, BenchmarkItem> customBenchmarks;
     //BENCHMARKING
     @FXML
-    private Pane Benchmarking;
-    @FXML
     private AnchorPane anchorPane;
-    @FXML
-    private Pane paneView;
     @FXML
     private CheckBox GC_FastSort, GC_Remove, GC_Rehash, GC_Values, GC_Constructor, GC_Keys, GC_Get, GC_Put,
             GC_ArrayListMergeSort, GC_ProfSlowSort, GC_Iter, GC_hasNext, GC_Next, GC_J_Constructor,
@@ -245,7 +240,6 @@ public class Controller implements Initializable {
             scheduledExecutorService.shutdownNow();
         } catch (NullPointerException e) {
         }
-        paneView.getChildren().clear();
         NumberAxis yAxis = new NumberAxis();
         CategoryAxis xAxis = new CategoryAxis();
 

@@ -30,6 +30,8 @@ public class MainWindow extends Application {
         }catch(Exception e){}
         primaryStage.setScene(s);
         primaryStage.setResizable(true);
+        primaryStage.setMaximized(true);
+        primaryStage.setOnCloseRequest(e -> exitProgram());
 //        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 //            @Override
 //            public void handle(WindowEvent windowEvent) {
@@ -46,6 +48,10 @@ public class MainWindow extends Application {
 //            }
 //        });
         primaryStage.show();
+    }
+
+    private void exitProgram() {
+        System.exit(0);
     }
 
 }
