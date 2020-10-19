@@ -24,8 +24,12 @@ public class MainWindow extends Application {
         //TODO: Make CSS theme work properly! (Gradle issue), Make dark theme toggleable
         Parent root = FXMLLoader.load(getClass().getResource("MainWindowDesign.fxml"));
         primaryStage.setTitle("Runtime Efficiency Wizard - <3 sashaphoto.ca Tweet Visualizer");
-        primaryStage.setScene(new Scene(root, 900, 800));
-        primaryStage.setResizable(false);
+        Scene s = new Scene(root);
+        try {
+            s.getStylesheets().add(getClass().getResource("mondea_dark.css").toExternalForm());
+        }catch(Exception e){}
+        primaryStage.setScene(s);
+        primaryStage.setResizable(true);
 //        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 //            @Override
 //            public void handle(WindowEvent windowEvent) {

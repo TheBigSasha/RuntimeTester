@@ -8,5 +8,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface benchmark {
     public String name();
-    public String category();
+    public String category() default "Custom Methods";
+    public String expectedEfficiency() default "O(?)";
+    public String description() default "";
+
 }

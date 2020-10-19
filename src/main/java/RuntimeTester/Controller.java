@@ -1,8 +1,8 @@
 package RuntimeTester;
 
-import com.google.common.reflect.ClassPath;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,12 +18,22 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -32,10 +42,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Controller implements Initializable {
     //private TwitterBenchmark tBM;
     private ScheduledExecutorService scheduledExecutorService;
+    private HashMap<String, BenchmarkItem> customBenchmarks;
     //BENCHMARKING
     @FXML
     private Pane Benchmarking;
@@ -73,12 +85,130 @@ public class Controller implements Initializable {
                 GC_ArrayListMergeSort, GC_ProfSlowSort, GC_Iter, GC_hasNext, GC_Next, GC_J_Constructor,
                 GC_J_Put, GC_J_Get, GC_J_Remove, GC_J_Values, GC_J_Keys, GC_Twit_Trending, GC_Twit_Constructor, GC_Twit_ByDate, GC_Twit_ByAuth, GC_Twit_Add,
                 GC_Twit_ConstructorII, GC_Twit_TrendingII));
-        addListeners();
-        initalizeGraph();
         try {
             reflexiveGetBenchmarkables();
-        } catch (IOException e) {
+            addReflexiveBenchmarks();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
+        }
+        addListeners();
+        initalizeGraph();
+
+    }
+
+    private void addReflexiveBenchmarks() {
+        for(BenchmarkItem item : customBenchmarks.values()){
+            reflexive_button_area.getButtons().add(item.getCheckbox());
+        }
+    }
+
+    private class BenchmarkItem{
+        public long getCounter() {
+            return counter;
+        }
+
+        public void setCounter(long counter) {
+            this.counter = counter;
+        }
+
+        public String getName() {
+            StringBuilder sb = new StringBuilder();
+
+            if(name != null && !name.equals("")){ sb.append(name);}else {
+                sb.append(invokable.getName());
+            }
+
+            if(!expectedRuntime.equals("O(?)")) sb.append(" ").append(expectedRuntime);
+            return sb.toString();
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        private final Method invokable;
+        private long counter;
+        private String name;
+        private String description;
+        private CheckBox box;
+        private Object testClass;
+        private String expectedRuntime;
+
+        public BenchmarkItem(Method m, benchmark a) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+            System.out.println("Trying to make benchmark item from: " + m.getName());
+            name = a.name();
+            description = a.category();
+            expectedRuntime = a.expectedEfficiency();
+            counter = 0l;
+            if(!m.getReturnType().equals(Long.class) && !m.getReturnType().equals(long.class)) throw new IllegalArgumentException("Benchmark item must return Long or long");
+            if(m.getParameterCount() != 1 ||
+                    (!m.getParameters()[0].getType().equals(Long.class) &&
+                            !m.getParameters()[0].getType().equals(long.class) &&
+                            !m.getParameters()[0].getType().equals(int.class) &&
+                            !m.getParameters()[0].getType().equals(Integer.class))) throw new IllegalArgumentException("Benchmark item must take a Long, long, int, or Integer as input");
+            invokable = m;
+            //Constructor c = invokable.getClass().getConstructor();      //TODO: How in the fuck constructor calls?
+            //c.setAccessible(true);
+            testClass  = new PolynomialBenchmark();
+            invokable.setAccessible(true);
+            box = new CheckBox(getName());
+            box.setOnAction(this::bindButton);
+            Tooltip t = new Tooltip();
+            StringBuilder sb = new StringBuilder();
+            sb.append("Declared method name: " + invokable.getName());
+            if(a.description() != ""){
+                sb.append(a.description());
+            }
+            t.setText(sb.toString());
+            box.setTooltip(t);
+        }
+
+        public Long run(Long intensity) throws InvocationTargetException, IllegalAccessException, InstantiationException {
+            counter = intensity;
+            System.out.println("Invoking run of " + invokable.getName());
+            return (Long) invokable.invoke(testClass, intensity);
+        }
+
+        public long iterate() throws InvocationTargetException, IllegalAccessException, InstantiationException {
+            counter++;
+            return run(counter);
+        }
+
+        public CheckBox getCheckbox(){
+         return box;
+        }
+
+        private void bindButton(ActionEvent e) {
+            resetButtons();
+        }
+
+    }
+
+    private void reflexiveGetBenchmarkables() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        customBenchmarks = new HashMap<>();
+        /*Reflections reflections = new Reflections(new ConfigurationBuilder()
+                .setUrls(ClasspathHelper.getUrlForClass(PolynomialBenchmark.class))
+                .setScanners(new MethodAnnotationsScanner()));
+
+        Set<Method> methods = reflections.getMethodsAnnotatedWith(benchmark.class);*/
+        for(Method m : PolynomialBenchmark.class.getMethods()) {        //TODO: generalize
+            Annotation[] annotations = m.getAnnotations();
+            if (annotations.length == 0) continue;
+            for (Annotation a : annotations) {
+                if (a instanceof benchmark) {
+                    benchmark bm = (benchmark) a;
+                    BenchmarkItem item =new BenchmarkItem(m,bm);
+                    customBenchmarks.put(item.getCheckbox().getText(), item);
+                }
+            }
         }
     }
 
@@ -111,30 +241,6 @@ public class Controller implements Initializable {
         initalizeGraph();
     }
 
-    private void reflexiveGetBenchmarkables() throws IOException {
-        ArrayList<Method> customBenchmarks = new ArrayList<>();
-        for(ClassPath.ClassInfo c : ClassPath.from(this.getClass().getClassLoader()).getTopLevelClasses()){     //TODO: it no workie :(
-            for(Method m : c.load().getMethods()){
-                Annotation[] annotations = m.getAnnotations();
-                if(annotations.length == 0) continue;
-                for(Annotation a : annotations){
-                    if(a instanceof benchmark){
-                        benchmark bm = (benchmark) a;
-                        CheckBox box = new CheckBox(bm.name());
-                        box.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                //TODO: add this method "m" to a run pool if the box is selected!
-                                //also check that it returns long and takes int as input
-                            }
-                        });
-
-                    }
-                }
-            }
-        }
-    }
-
     private void initalizeGraph() {
         try {
             scheduledExecutorService.shutdownNow();
@@ -160,10 +266,11 @@ public class Controller implements Initializable {
         HashMap<XYChart.Series<String, Number>, Long> plotsRunTime = new HashMap<XYChart.Series<String, Number>, Long>();
 
 
-        for (CheckBox box : toggles) {  //TODO: do this better for reflection
-            if (box.isSelected()) {
+        for (BenchmarkItem item : customBenchmarks.values()) {  //TODO: do this better for reflection
+            if (item.getCheckbox().isSelected()) {
+                System.out.println("Plotting item " + item.getName());
                 XYChart.Series<String, Number> series = new XYChart.Series<>();
-                series.setName(box.getText());  //TODO: Better naming
+                series.setName(item.getName());  //TODO: Better naming
                 plotsRunTime.put(series, 0L);
             }
         }
@@ -172,10 +279,11 @@ public class Controller implements Initializable {
         lineChart.setPrefSize(900, 500);
         paneView.getChildren().add(lineChart);
 
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutorService = Executors.newScheduledThreadPool(8);
 
-        AtomicInteger counter = new AtomicInteger();
+        AtomicLong counter = new AtomicLong();
         scheduledExecutorService.scheduleAtFixedRate(() -> {
+            System.out.println("hello from ses");
             counter.getAndIncrement();
             for (Map.Entry<XYChart.Series<String, Number>, Long> entry : plotsRunTime.entrySet()) {
                 entry.setValue(ComputeRuntime(entry.getKey().getName(), counter.get()));
@@ -183,7 +291,8 @@ public class Controller implements Initializable {
 
             Platform.runLater(() -> {
                 for (Map.Entry<XYChart.Series<String, Number>, Long> entry : plotsRunTime.entrySet()) {
-                    entry.getKey().getData().add(new XYChart.Data<String, Number>(Integer.toString(counter.get()), entry.getValue()));
+                    entry.getKey().getData().add(new XYChart.Data<String, Number>(Long.toString(counter.get()), entry.getValue()));
+                    System.out.println(entry.getValue());
                     if (entry.getKey().getData().size() > 75) {
                         lineChart.setVerticalGridLinesVisible(false);
                         lineChart.setHorizontalGridLinesVisible(false);
@@ -195,63 +304,19 @@ public class Controller implements Initializable {
 
     }
 
-    private long ComputeRuntime(String input, int count) {
+    private long ComputeRuntime(String input, Long count) {
+        System.out.println("Computing runtime of " + input + " at count " + count);
         if (GC_TurboMode.isSelected()) {
-            count *= GC_TurboFactor.getValue();
+            double amount = Double.valueOf(count);
+            amount *= GC_TurboFactor.getValue();
+            count = Math.round(amount);
         }
-      /*  if (input.equals(GC_FastSort.getText())) {
-            return BM.timedSort(count);
-        } else if (input.equals(GC_Remove.getText())) {
-            return BM.timedRemove(count);
-        } else if (input.equals(GC_Rehash.getText())) {
-            return BM.timedRehash(count);
-        } else if (input.equals(GC_Values.getText())) {
-            return BM.timedValues(count);
-        } else if (input.equals(GC_Constructor.getText())) {
-            return BM.timedMyHashTable(count);
-        } else if (input.equals(GC_Keys.getText())) {
-            return BM.timedKeys(count);
-        } else if (input.equals(GC_Get.getText())) {
-            return BM.timedGetAtSize(count);
-        } else if (input.equals(GC_Put.getText())) {
-            return BM.timedPutAtSize(count);
-        } else if (input.equals(GC_ArrayListMergeSort.getText())) {
-            return BM.timedSortReference(count);
-        } else if (input.equals(GC_ProfSlowSort.getText())) {
-            return BM.timedSlowSort(count);
-        } else if (input.equals(GC_Iter.getText())) {
-            return BM.timedInterator(count);
-        } else if (input.equals(GC_Next.getText())) {
-            return BM.timedIteratorNext(count);
-        } else if (input.equals(GC_J_Constructor.getText())) {
-            return BM.timedMyHashTableReference(count);
-        } else if (input.equals(GC_J_Put.getText())) {
-            return BM.timedPutReference(count);
-        } else if (input.equals(GC_J_Get.getText())) {
-            return BM.timedGetAtSizeRefernce(count);
-        } else if (input.equals(GC_J_Remove.getText())) {
-            return BM.timedRemoveReference(count);
-        } else if (input.equals(GC_J_Values.getText())) {
-            return BM.timedValuesReference(count);
-        } else if (input.equals(GC_J_Keys.getText())) {
-            return BM.timedKeysReference(count);
-        } else if (input.equals(GC_Twit_Trending.getText())) {
-            return tBM.timedTwitterTrending(count, (int) (count * GC_StopWordFactor.getValue()));
-        } else if (input.equals(GC_Twit_Constructor.getText())) {
-            return tBM.timedTwitterConstructor(count, (int) (count * GC_StopWordFactor.getValue()));
-        } else if (input.equals(GC_Twit_ByDate.getText())) {
-            return tBM.timedTwitterByDate(count);
-        } else if (input.equals(GC_Twit_ByAuth.getText())) {
-            return tBM.timedTwitterByAuth(count);
-        } else if (input.equals(GC_Twit_Add.getText())) {
-            return tBM.timedTwitterAdd(count);
-        } else if (input.equals(GC_Twit_ConstructorII.getText())) {
-            return tBM.timedTwitterConstructor(count, (int) (count * GC_StopWordFactorII.getValue()));
-        } else if (input.equals(GC_Twit_TrendingII.getText())) {
-            return tBM.timedTwitterTrending(count, (int) (count * GC_StopWordFactorII.getValue()));
-        } else */{
-            return 0L;
-        }
+          try{
+              return customBenchmarks.get(input).run(count);
+          } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+              e.printStackTrace();
+              return 0L;
+          }
     }
 
     private void enableDarkTheme() {
