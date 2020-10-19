@@ -54,7 +54,7 @@ public class BenchmarkDefinitions {
         determineSpeed();
     }
 
-    @benchmark(name = "java::ArrayList.sort", expectedEfficiency = "O(n log(n))")
+    @benchmark(name = "ArrayList.sort", expectedEfficiency = "O(n log(n))", category = "Java Builtin")
     public static long arraysSort(long size) {
         ArrayList<Date> dataset = new ArrayList<>();
         for (long i = 0; i < size; i++) {
@@ -66,28 +66,28 @@ public class BenchmarkDefinitions {
         return endTime - startTime;
     }
 
-    @benchmark(name = "traverse list", category = "math demos", expectedEfficiency = "O(N)")
+    @benchmark(name = "traverse list", category = "Math demos", expectedEfficiency = "O(N)")
     public Long n(Long size) {
         //System.out.println("Invoked benchmark for size " + size);
         return size * getSimulationSpeed();
     }
 
-    @benchmark(name = "sort", expectedEfficiency = "o(n^2)")
+    @benchmark(name = "sort", expectedEfficiency = "o(n^2)", category = "Math demos")
     public Long nSquared(Long size) {
         return size * size * getSimulationSpeed();
     }
 
-    @benchmark(name = "fast sorting ", description = "lol kek", expectedEfficiency = "o(n log(n))")
+    @benchmark(name = "fast sorting ", category = "Math demos", expectedEfficiency = "o(n log(n))", description = "This is the speed at which many optimal sorting algorithms run")
     public long nLogN(long size) {
         return (int) (size * Math.log(size)) * getSimulationSpeed();
     }
 
-    @benchmark(name = "superfast", description = " this one is sanic fast", expectedEfficiency = "O(1)")
+    @benchmark(name = "superfast", description = " this one is sanic fast", expectedEfficiency = "O(1)", category = "Math demos")
     public long one(long size) {
         return getSimulationSpeed();
     }
 
-   /* @benchmark(name="the worst", expectedEfficiency = "O(n!)")
+   /* @benchmark(name="the worst", expectedEfficiency = "O(n!)", category = "Math demos")
     public static long nFactorial(long size){
         long n=1;
         long factorial = getSimulationSpeed();
@@ -97,7 +97,7 @@ public class BenchmarkDefinitions {
         return factorial;
     }*/     //This breaks the graph by exploding to massive size
 
-    @benchmark(name = "java::queue.deqeue", expectedEfficiency = "O(1)")
+    @benchmark(name = "queue.deqeue", expectedEfficiency = "O(1)", category = "Java Builtin")
     public long enqueueTest(long size) {
         Queue<Date> dataset = new ConcurrentLinkedQueue<>();
         for (long i = 0; i < size; i++) {
@@ -109,7 +109,7 @@ public class BenchmarkDefinitions {
         return endTime - startTime;
     }
 
-    @benchmark(name="java::queue.get from middle", expectedEfficiency = "O(N)")
+    @benchmark(name = "queue.get from middle", expectedEfficiency = "O(N)", category = "Java Builtin")
     public long getFromMiddleOfQueue(long size){
         Queue<Date> dataset = new ConcurrentLinkedQueue<>();
         for(long i = 0; i < size; i++){

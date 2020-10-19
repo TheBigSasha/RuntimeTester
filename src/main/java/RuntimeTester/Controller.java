@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -68,8 +69,22 @@ public class Controller implements Initializable {
         initalizeGraph();
     }
 
+    private int compareBenchmarkItems(BenchmarkItem a, BenchmarkItem b) {
+        return a.getCategory().compareTo(b.getCategory());
+    }
+
     private void addReflexiveBenchmarks() {
-        for(BenchmarkItem item : customBenchmarks.values()){
+        List<BenchmarkItem> items = new ArrayList<>(customBenchmarks.values());
+        items.sort(this::compareBenchmarkItems);
+        String curCat = items.get(0).getCategory();
+        if (!curCat.isBlank()) {
+            reflexiveButtonArea.getChildren().add(new Label(curCat));
+        }
+        for (BenchmarkItem item : items) {
+            if (!item.getCategory().equals(curCat)) {
+                curCat = item.getCategory();
+                reflexiveButtonArea.getChildren().add(new Label(curCat));
+            }
             reflexiveButtonArea.getChildren().add(item.getCheckbox());
         }
     }
@@ -235,6 +250,28 @@ public class Controller implements Initializable {
             this.counter = counter;
         }
 
+        private final String category;
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        private final Method invokable;
+        private long counter;
+        private String name;
+        private String description;
+        private final CheckBox box;
+        private final Object testClass;
+        private final String expectedRuntime;
+
         public BenchmarkItem(Method m, benchmark a) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
             name = a.name();
             description = a.category();
@@ -256,33 +293,15 @@ public class Controller implements Initializable {
             box.setOnAction(this::bindButton);
             Tooltip t = new Tooltip();
             StringBuilder sb = new StringBuilder();
-            sb.append("Declared method name: ").append(invokable.getName());
+            sb.append(a.category()).append(" : ");
+            sb.append(invokable.getName());
+            category = a.category();
             if (!a.description().equals("")) {
-                sb.append(a.description());
+                sb.append(" ").append(a.description());
             }
             t.setText(sb.toString());
             box.setTooltip(t);
         }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        private final Method invokable;
-        private long counter;
-        private String name;
-        private String description;
-        private final CheckBox box;
-        private final Object testClass;
-        private final String expectedRuntime;
 
         public String getName() {
             StringBuilder sb = new StringBuilder();
@@ -316,6 +335,13 @@ public class Controller implements Initializable {
             initalizeGraph();
         }
 
+        public String getCategory() {
+            return category;
+        }
+
+        public int compareTo(BenchmarkItem benchmarkItem, BenchmarkItem benchmarkItem1) {
+            return benchmarkItem.getCategory().compareTo(benchmarkItem1.getCategory());
+        }
     }
 
     private void enableDarkTheme() {
