@@ -49,4 +49,9 @@ public class BenchmarkDefinitions {
     public long fastSort(long size){
         return (int) (size * Math.log(size)) * speed;
     }
+
+    @benchmark(name="superfast", description =" this one is sanic fast", expectedEfficiency = "O(1)")
+    public long oOfOne(long size){
+        return speed;
+    }
 }

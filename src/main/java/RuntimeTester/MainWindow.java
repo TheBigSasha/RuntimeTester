@@ -25,7 +25,7 @@ public class MainWindow extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("MainWindowDesign.fxml"));
         primaryStage.setTitle("Runtime Efficiency Wizard - <3 sashaphoto.ca Tweet Visualizer");
         Scene s = new Scene(root);
-        s.getStylesheets().add(Controller.darkThemeCSS);
+        //s.getStylesheets().add(Controller.darkThemeCSS);
         primaryStage.setScene(s);
         primaryStage.setResizable(true);
         primaryStage.setMaximized(true);
