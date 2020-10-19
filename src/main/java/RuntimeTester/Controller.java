@@ -31,29 +31,26 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Controller implements Initializable {
+    public static final String darkThemeCSS = "https://raw.githubusercontent.com/joffrey-bion/javafx-themes/master/css/modena_dark.css";
+    public static final String lightThemeCSS = "https://raw.githubusercontent.com/StaticallyTypedRice/GoliathCSS/master/src/goliath.css/classes/goliath/css/Goliath-Light.css";     //TODO: Find good light theme
+    //BENCHMARKING
+    private static final ArrayList<String> trendOptions = new ArrayList<String>(Arrays.asList("Bee Movie script (small)", "real tweets (medium)",
+            "a bunch of songs (colossal)", "a bunch of songs (large)",
+            "a custom webpage"));
+    private final Boolean GC_TurboMode = true;
     @FXML
     public BorderPane mainBorderView;
     public Button buttom_darkMode;
     public ScrollPane reflexScroller;
     public FlowPane reflexiveButtonArea;
     public Label stepTimeDisplay;
-
-    private final Boolean GC_TurboMode = true;
+    int graphSpeed = 250;
     private ScheduledExecutorService scheduledExecutorService;
     private HashMap<String, BenchmarkItem> customBenchmarks;
-    int graphSpeed = 250;
-    //BENCHMARKING
-    private static final ArrayList<String> trendOptions = new ArrayList<String>(Arrays.asList("Bee Movie script (small)", "real tweets (medium)",
-            "a bunch of songs (colossal)", "a bunch of songs (large)",
-            "a custom webpage"));
     @FXML
     private Slider GC_TurboFactor, GC_AdjustmentFactor;
     @FXML
     private Button GC_Reset, GC_Help, GC_Refresh;
-
-    public static final String darkThemeCSS = "https://raw.githubusercontent.com/joffrey-bion/javafx-themes/master/css/modena_dark.css";
-
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -136,7 +133,7 @@ public class Controller implements Initializable {
                 amount *= GC_TurboFactor.getValue();
                 long count = Math.round(amount);
                 counter.addAndGet(count);
-            }else{
+            } else {
                 counter.getAndIncrement();
             }
             for (Map.Entry<XYChart.Series<String, Number>, Long[]> entry : plotsRunTime.entrySet()) {
@@ -150,7 +147,7 @@ public class Controller implements Initializable {
                         lineChart.setVerticalGridLinesVisible(false);
                         lineChart.setHorizontalGridLinesVisible(false);
                         lineChart.setCreateSymbols(false);
-                    }else{
+                    } else {
                         lineChart.setVerticalGridLinesVisible(true);
                         lineChart.setHorizontalGridLinesVisible(true);
                         lineChart.setCreateSymbols(true);
@@ -180,8 +177,6 @@ public class Controller implements Initializable {
             }
         }
     }
-
-
 
     @FXML
 
@@ -241,36 +236,29 @@ public class Controller implements Initializable {
         }
     }
 
+    private void enableDarkTheme() {
+        buttom_darkMode.setText("Light theme");
+        mainBorderView.getStylesheets().remove(lightThemeCSS);
+        mainBorderView.getStylesheets().add(darkThemeCSS);
+
+    }
+
+
+    private void disableDarkTheme() {
+        buttom_darkMode.setText("Dark theme");
+        mainBorderView.getStylesheets().remove(darkThemeCSS);
+        mainBorderView.getStylesheets().add(lightThemeCSS);
+    }
+
     private class BenchmarkItem {
-        public long getCounter() {
-            return counter;
-        }
-
-        public void setCounter(long counter) {
-            this.counter = counter;
-        }
-
         private final String category;
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
         private final Method invokable;
-        private long counter;
-        private String name;
-        private String description;
         private final CheckBox box;
         private final Object testClass;
         private final String expectedRuntime;
+        private long counter;
+        private String name;
+        private String description;
 
         public BenchmarkItem(Method m, benchmark a) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
             name = a.name();
@@ -303,6 +291,22 @@ public class Controller implements Initializable {
             box.setTooltip(t);
         }
 
+        public long getCounter() {
+            return counter;
+        }
+
+        public void setCounter(long counter) {
+            this.counter = counter;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
         public String getName() {
             StringBuilder sb = new StringBuilder();
 
@@ -314,6 +318,10 @@ public class Controller implements Initializable {
 
             if (!expectedRuntime.equals("O(?)")) sb.append(" ").append(expectedRuntime);
             return sb.toString();
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
 
         public Long run(Long intensity) throws InvocationTargetException, IllegalAccessException, InstantiationException {
@@ -343,23 +351,6 @@ public class Controller implements Initializable {
             return benchmarkItem.getCategory().compareTo(benchmarkItem1.getCategory());
         }
     }
-
-    private void enableDarkTheme() {
-        buttom_darkMode.setText("Light theme");
-        mainBorderView.getStylesheets().remove(lightThemeCSS);
-        mainBorderView.getStylesheets().add(darkThemeCSS);
-
-    }
-
-
-
-    private void disableDarkTheme() {
-        buttom_darkMode.setText("Dark theme");
-        mainBorderView.getStylesheets().remove(darkThemeCSS);
-        mainBorderView.getStylesheets().add(lightThemeCSS);
-    }
-
-    public static final String lightThemeCSS = "https://raw.githubusercontent.com/StaticallyTypedRice/GoliathCSS/master/src/goliath.css/classes/goliath/css/Goliath-Light.css";     //TODO: Find good light theme
     //public static final String darkThemeCss = "https://raw.githubusercontent.com/StaticallyTypedRice/GoliathCSS/master/src/goliath.css/classes/goliath/css/Goliath-Envy.css";    //TODO: this dark theme very cool
     //public static final String lightThemeCSS = "https://raw.githubusercontent.com/bullheadandplato/MaterialFX/master/material-fx-v0_3.css";
 }
