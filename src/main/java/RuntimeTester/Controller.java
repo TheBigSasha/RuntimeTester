@@ -1,5 +1,6 @@
 package RuntimeTester;
 
+import com.sun.javafx.effect.EffectDirtyBits;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -48,29 +49,23 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Controller implements Initializable {
     @FXML
     public BorderPane mainBorderView;
+    public CheckBox GC_TurboMode;
+    public Button buttom_darkMode;
+
     private ScheduledExecutorService scheduledExecutorService;
     private HashMap<String, BenchmarkItem> customBenchmarks;
+    int graphSpeed = 250;
     //BENCHMARKING
-    @FXML
-    private AnchorPane anchorPane;
-    @FXML
-    private CheckBox GC_FastSort, GC_Remove, GC_Rehash, GC_Values, GC_Constructor, GC_Keys, GC_Get, GC_Put,
-            GC_ArrayListMergeSort, GC_ProfSlowSort, GC_Iter, GC_hasNext, GC_Next, GC_J_Constructor,
-            GC_J_Put, GC_J_Get, GC_J_Remove, GC_J_Values, GC_J_Keys;
-    @FXML
-    private CheckBox GC_Twit_Trending, GC_Twit_Constructor, GC_Twit_ByDate, GC_Twit_ByAuth, GC_Twit_Add,
-            GC_Twit_ConstructorII, GC_Twit_TrendingII, GC_TurboMode;
-    //FUN DEMOS
     private static final ArrayList<String> trendOptions = new ArrayList<String>(Arrays.asList("Bee Movie script (small)", "real tweets (medium)",
             "a bunch of songs (colossal)", "a bunch of songs (large)",
             "a custom webpage"));
     @FXML
-    private Slider GC_StopWordFactor, GC_StopWordFactorII, GC_TurboFactor;
+    private Slider GC_TurboFactor;
     @FXML
     private Button GC_Reset, GC_Help, GC_Refresh;
 
-    @FXML
-    private ArrayList<CheckBox> toggles;
+    private static final String darkThemeCSS = "mondea_dark.css";
+
 
     @FXML
     private ButtonBar reflexive_button_area;
@@ -79,10 +74,6 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        toggles = new ArrayList<>(Arrays.asList(GC_FastSort, GC_Remove, GC_Rehash, GC_Values, GC_Constructor, GC_Keys, GC_Get, GC_Put,
-                GC_ArrayListMergeSort, GC_ProfSlowSort, GC_Iter, GC_hasNext, GC_Next, GC_J_Constructor,
-                GC_J_Put, GC_J_Get, GC_J_Remove, GC_J_Values, GC_J_Keys, GC_Twit_Trending, GC_Twit_Constructor, GC_Twit_ByDate, GC_Twit_ByAuth, GC_Twit_Add,
-                GC_Twit_ConstructorII, GC_Twit_TrendingII));
         try {
             reflexiveGetBenchmarkables();
             addReflexiveBenchmarks();
@@ -155,6 +146,7 @@ public class Controller implements Initializable {
             testClass  = new PolynomialBenchmark();
             invokable.setAccessible(true);
             box = new CheckBox(getName());
+            box.setSelected(true);
             box.setOnAction(this::bindButton);
             Tooltip t = new Tooltip();
             StringBuilder sb = new StringBuilder();
@@ -215,6 +207,15 @@ public class Controller implements Initializable {
         GC_Reset.setOnAction(e -> resetButtons());
         GC_Refresh.setOnAction(e -> initalizeGraph());
         GC_Help.setOnAction(e -> openHelpPage());
+        buttom_darkMode.setOnAction(e -> toggleDarkTheme());
+    }
+
+    private void toggleDarkTheme() {
+        if(mainBorderView.getStylesheets().contains(darkThemeCSS)){
+            disableDarkTheme();
+        }else{
+            enableDarkTheme();
+        }
     }
 
     private void openHelpPage() {
@@ -290,14 +291,18 @@ public class Controller implements Initializable {
             Platform.runLater(() -> {
                 for (Map.Entry<XYChart.Series<String, Number>, Long[]> entry : plotsRunTime.entrySet()) {
                     entry.getKey().getData().add(new XYChart.Data<String, Number>(Long.toString(entry.getValue()[1]), entry.getValue()[0]));
-                    if (entry.getKey().getData().size() > 75) {
+                    if (entry.getKey().getData().size() > 45 * (mainBorderView.getWidth() / 1000)) {
                         lineChart.setVerticalGridLinesVisible(false);
                         lineChart.setHorizontalGridLinesVisible(false);
                         lineChart.setCreateSymbols(false);
+                    }else{
+                        lineChart.setVerticalGridLinesVisible(true);
+                        lineChart.setHorizontalGridLinesVisible(true);
+                        lineChart.setCreateSymbols(true);
                     }
                 }
             });
-        }, 0, 250, TimeUnit.MILLISECONDS);
+        }, 0, graphSpeed, TimeUnit.MILLISECONDS);
 
     }
 
@@ -314,10 +319,12 @@ public class Controller implements Initializable {
     }
 
     private void enableDarkTheme() {
-        anchorPane.getStylesheets().add("/RuntimeTester/mondea_dark.css");
+        mainBorderView.getStylesheets().add(darkThemeCSS);
     }
 
+
+
     private void disableDarkTheme() {
-        anchorPane.getStylesheets().remove("/RuntimeTester/mondea_dark.css");
+        mainBorderView.getStylesheets().remove(darkThemeCSS);
     }
 }
