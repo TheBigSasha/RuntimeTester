@@ -229,7 +229,13 @@ public class Controller implements Initializable {
         //System.out.println("Computing runtime of " + input + " at count " + count);
 
         try {
-            return customBenchmarks.get(input).run(count);
+            long runtime = customBenchmarks.get(input).run(count);
+            if (runtime < 0) {
+                System.out.println("[OVERFLOW] " + input + " took too long to run!");
+                return runtime * -1;
+            } else {
+                return runtime;
+            }
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
             e.printStackTrace();
             return 0L;

@@ -79,7 +79,7 @@ public class BenchmarkDefinitions {
 
     @benchmark(name = "fast sorting ", category = "Math demos", expectedEfficiency = "o(n log(n))", description = "This is the speed at which many optimal sorting algorithms run")
     public long nLogN(long size) {
-        return (int) (size * Math.log(size)) * getSimulationSpeed();
+        return (long) (size * Math.log(size)) * getSimulationSpeed();
     }
 
     @benchmark(name = "superfast", description = " this one is sanic fast", expectedEfficiency = "O(1)", category = "Math demos")
