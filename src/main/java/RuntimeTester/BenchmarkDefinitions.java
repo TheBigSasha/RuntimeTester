@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.OptionalDouble;
 
-public class PolynomialBenchmark {
+public class BenchmarkDefinitions {
     private static int speed = 0;
 
     private static void determineSpeed(){
@@ -30,7 +30,7 @@ public class PolynomialBenchmark {
         System.out.println("Slowness of your computer is " + speed);
     }
 
-    public PolynomialBenchmark(){
+    public BenchmarkDefinitions(){
         determineSpeed();
     }
 

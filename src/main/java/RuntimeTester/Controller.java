@@ -1,10 +1,7 @@
 package RuntimeTester;
 
-import com.sun.javafx.effect.EffectDirtyBits;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
@@ -12,30 +9,15 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import org.reflections.Reflections;
-import org.reflections.scanners.MethodAnnotationsScanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -43,7 +25,6 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Controller implements Initializable {
@@ -143,7 +124,7 @@ public class Controller implements Initializable {
             invokable = m;
             //Constructor c = invokable.getClass().getConstructor();      //TODO: How in the fuck constructor calls?
             //c.setAccessible(true);
-            testClass  = new PolynomialBenchmark();
+            testClass  = new BenchmarkDefinitions();
             invokable.setAccessible(true);
             box = new CheckBox(getName());
             box.setSelected(true);
@@ -186,7 +167,7 @@ public class Controller implements Initializable {
                 .setScanners(new MethodAnnotationsScanner()));
 
         Set<Method> methods = reflections.getMethodsAnnotatedWith(benchmark.class);*/
-        for(Method m : PolynomialBenchmark.class.getMethods()) {        //TODO: generalize
+        for(Method m : BenchmarkDefinitions.class.getMethods()) {        //TODO: generalize
             Annotation[] annotations = m.getAnnotations();
             if (annotations.length == 0) continue;
             for (Annotation a : annotations) {
