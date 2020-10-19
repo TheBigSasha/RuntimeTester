@@ -1,317 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonBar?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="anchorPane" maxHeight="800.0" maxWidth="900.0" prefHeight="800.0" prefWidth="900.0" stylesheets="mondea_dark.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RuntimeTester.Controller">
-   <Pane fx:id="Benchmarking" prefHeight="700.0" prefWidth="900.0">
-      <children>
-         <AnchorPane fx:id="innerPane" prefWidth="900.0">
-            <BorderPane layoutY="600.0" prefHeight="200.0" prefWidth="900.0">
-               <center>
-                  <TabPane prefHeight="218.0" prefWidth="900.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-                     <tabs>
-                        <Tab text="Assignment 2">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <FlowPane layoutY="11.0">
-                                       <children>
-                                          <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="50.0" prefWidth="900.0">
-                                             <children>
-                                                <Label text="Hash Table" textAlignment="CENTER">
-                                                   <font>
-                                                      <Font name="Arial Black" size="15.0" />
-                                                   </font>
-                                                </Label>
-                                                <ButtonBar prefHeight="27.0" prefWidth="899.0">
-                                                   <buttons>
-                                                      <CheckBox fx:id="GC_FastSort" mnemonicParsing="false" selected="true" text="FastSort O(nlog(n))" wrapText="true" />
-                                                      <CheckBox fx:id="GC_Remove" mnemonicParsing="false" text="Remove O(1)" />
-                                                      <CheckBox fx:id="GC_Rehash" mnemonicParsing="false" text="Rehash O(m)" />
-                                                      <CheckBox fx:id="GC_Values" mnemonicParsing="false" text="Values O(m)" />
-                                                      <CheckBox fx:id="GC_Constructor" mnemonicParsing="false" text="Constructor" />
-                                                      <CheckBox fx:id="GC_Keys" mnemonicParsing="false" text="Keys O(m)" />
-                                                      <CheckBox fx:id="GC_Get" mnemonicParsing="false" text="Get O(1)" />
-                                                      <CheckBox fx:id="GC_Put" mnemonicParsing="false" text="Put O(1)" />
-                                                   </buttons>
-                                                </ButtonBar>
-                                             </children>
-                                          </FlowPane>
-                                          <GridPane prefHeight="49.0" prefWidth="900.0">
-                                             <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="551.0" minWidth="10.0" prefWidth="451.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="895.0" minWidth="10.0" prefWidth="449.0" />
-                                             </columnConstraints>
-                                             <rowConstraints>
-                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                             </rowConstraints>
-                                             <children>
-                                                <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" GridPane.columnIndex="1">
-                                                   <children>
-                                                      <Label text="Iterator" textAlignment="CENTER">
-                                                         <font>
-                                                            <Font name="Arial Black" size="15.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <ButtonBar>
-                                                         <buttons>
-                                                            <CheckBox fx:id="GC_Iter" mnemonicParsing="false" text="Constructor O(m)" />
-                                                            <CheckBox fx:id="GC_hasNext" mnemonicParsing="false" text="hasNext O(1)" />
-                                                            <CheckBox fx:id="GC_Next" mnemonicParsing="false" text="Next O(1)" />
-                                                         </buttons>
-                                                      </ButtonBar>
-                                                   </children>
-                                                </FlowPane>
-                                                <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="50.0" prefWidth="900.0">
-                                                   <children>
-                                                      <Label text="Misc" textAlignment="CENTER">
-                                                         <font>
-                                                            <Font name="Arial Black" size="15.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <ButtonBar buttonMinWidth="140.0">
-                                                         <buttons>
-                                                            <CheckBox fx:id="GC_ArrayListMergeSort" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" text="ArrayList: Merge Sort" textAlignment="CENTER" />
-                                                            <CheckBox fx:id="GC_ProfSlowSort" mnemonicParsing="false" text="Prof: SlowSort O(n²)" wrapText="true" />
-                                                         </buttons>
-                                                      </ButtonBar>
-                                                   </children>
-                                                </FlowPane>
-                                             </children>
-                                          </GridPane>
-                                          <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="50.0" prefWidth="900.0">
-                                             <children>
-                                                <Label text="Java Hash Table" textAlignment="CENTER">
-                                                   <font>
-                                                      <Font name="Arial Black" size="15.0" />
-                                                   </font>
-                                                </Label>
-                                                <ButtonBar>
-                                                   <buttons>
-                                                      <CheckBox fx:id="GC_J_Constructor" mnemonicParsing="false" text="Constructor" />
-                                                      <CheckBox fx:id="GC_J_Put" mnemonicParsing="false" text="Put" />
-                                                      <CheckBox fx:id="GC_J_Get" mnemonicParsing="false" text="Get" />
-                                                      <CheckBox fx:id="GC_J_Remove" mnemonicParsing="false" text="Remove" />
-                                                      <CheckBox fx:id="GC_J_Values" mnemonicParsing="false" text="Values" />
-                                                      <CheckBox fx:id="GC_J_Keys" mnemonicParsing="false" text="Keys" />
-                                                   </buttons>
-                                                </ButtonBar>
-                                             </children>
-                                          </FlowPane>
-                                       </children>
-                                    </FlowPane>
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </Tab>
-                        <Tab text="Java Built-in">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <FlowPane prefHeight="240.0" prefWidth="900.0">
-                                       <children>
-                                          <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="50.0" prefWidth="900.0">
-                                             <children>
-                                                <Label text="Twitter" textAlignment="CENTER">
-                                                   <font>
-                                                      <Font name="Arial Black" size="15.0" />
-                                                   </font>
-                                                </Label>
-                                                <ButtonBar>
-                                                   <buttons>
-                                                      <CheckBox fx:id="GC_Twit_Trending" mnemonicParsing="false" text="Trending" wrapText="true" />
-                                                      <CheckBox fx:id="GC_Twit_Constructor" mnemonicParsing="false" text="Constructor" />
-                                                      <CheckBox fx:id="GC_Twit_ByDate" mnemonicParsing="false" text="By Date" />
-                                                      <CheckBox fx:id="GC_Twit_ByAuth" mnemonicParsing="false" text="By Author" />
-                                                      <CheckBox fx:id="GC_Twit_Add" mnemonicParsing="false" text="Add" />
-                                                   </buttons>
-                                                </ButtonBar>
-                                             </children>
-                                          </FlowPane>
-                                          <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="50.0" prefWidth="900.0">
-                                             <children>
-                                                <Label text="Extras" textAlignment="CENTER">
-                                                   <font>
-                                                      <Font name="Arial Black" size="15.0" />
-                                                   </font>
-                                                </Label>
-                                                <ButtonBar>
-                                                   <buttons>
-                                                      <CheckBox fx:id="GC_Twit_ConstructorII" mnemonicParsing="false" text="Constructor II" />
-                                                      <CheckBox fx:id="GC_Twit_TrendingII" mnemonicParsing="false" text="Trending II" />
-                                                      <CheckBox fx:id="GC_TurboMode" mnemonicParsing="false" text="Turbo Mode" />
-                                                   </buttons>
-                                                </ButtonBar>
-                                             </children>
-                                          </FlowPane>
-                                          <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="70.0" prefWidth="900.0">
-                                             <children>
-                                                <Label text="Controls" textAlignment="CENTER">
-                                                   <font>
-                                                      <Font name="Arial Black" size="15.0" />
-                                                   </font>
-                                                </Label>
-                                                <ButtonBar>
-                                                   <buttons>
-                                                      <FlowPane alignment="CENTER" orientation="VERTICAL" prefHeight="40.0">
-                                                         <children>
-                                                            <Label alignment="CENTER" contentDisplay="CENTER" text="Stop Words Factor" textAlignment="CENTER" />
-                                                            <Slider fx:id="GC_StopWordFactor" max="25.0" value="12.5" />
-                                                         </children>
-                                                      </FlowPane>
-                                                      <FlowPane alignment="CENTER" layoutX="180.0" layoutY="10.0" orientation="VERTICAL" prefHeight="40.0">
-                                                         <children>
-                                                            <Label alignment="CENTER" contentDisplay="CENTER" text="Stop Words Factor II" textAlignment="CENTER" />
-                                                            <Slider fx:id="GC_StopWordFactorII" max="25.0" value="12.5" />
-                                                         </children>
-                                                      </FlowPane>
-                                                      <FlowPane alignment="CENTER" layoutX="330.0" layoutY="10.0" orientation="VERTICAL" prefHeight="40.0">
-                                                         <children>
-                                                            <Label alignment="CENTER" contentDisplay="CENTER" text="Turbo Factor" textAlignment="CENTER" />
-                                                            <Slider fx:id="GC_TurboFactor" max="1000.0" value="20.0" />
-                                                         </children>
-                                                      </FlowPane>
-                                                   </buttons>
-                                                </ButtonBar>
-                                             </children>
-                                          </FlowPane>
-                                       </children>
-                                    </FlowPane>
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </Tab>
-                        <Tab text="Custom">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <FlowPane prefHeight="240.0" prefWidth="900.0">
-                                       <children>
-                                          <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="50.0" prefWidth="900.0">
-                                             <children>
-                                                <Label text="Custom Buttons" textAlignment="CENTER">
-                                                   <font>
-                                                      <Font name="Arial Black" size="15.0" />
-                                                   </font>
-                                                </Label>
-                                                <ButtonBar fx:id="reflexive_button_area" />
-                                             </children>
-                                          </FlowPane>
-                                       </children>
-                                    </FlowPane>
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </Tab>
-                        <Tab text="Settings">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <FlowPane prefHeight="240.0" prefWidth="900.0">
-                                       <children>
-                                          <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="50.0" prefWidth="900.0">
-                                             <children>
-                                                <Label text="Twitter" textAlignment="CENTER">
-                                                   <font>
-                                                      <Font name="Arial Black" size="15.0" />
-                                                   </font>
-                                                </Label>
-                                                <ButtonBar>
-                                                   <buttons>
-                                                      <CheckBox fx:id="GC_Twit_Trending2" mnemonicParsing="false" text="Trending" wrapText="true" />
-                                                      <CheckBox fx:id="GC_Twit_Constructor2" mnemonicParsing="false" text="Constructor" />
-                                                      <CheckBox fx:id="GC_Twit_ByDate2" mnemonicParsing="false" text="By Date" />
-                                                      <CheckBox fx:id="GC_Twit_ByAuth2" mnemonicParsing="false" text="By Author" />
-                                                      <CheckBox fx:id="GC_Twit_Add2" mnemonicParsing="false" text="Add" />
-                                                   </buttons>
-                                                </ButtonBar>
-                                             </children>
-                                          </FlowPane>
-                                          <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="50.0" prefWidth="900.0">
-                                             <children>
-                                                <Label text="Extras" textAlignment="CENTER">
-                                                   <font>
-                                                      <Font name="Arial Black" size="15.0" />
-                                                   </font>
-                                                </Label>
-                                                <ButtonBar>
-                                                   <buttons>
-                                                      <CheckBox fx:id="GC_Twit_ConstructorII2" mnemonicParsing="false" text="Constructor II" />
-                                                      <CheckBox fx:id="GC_Twit_TrendingII2" mnemonicParsing="false" text="Trending II" />
-                                                      <CheckBox fx:id="GC_TurboMode2" mnemonicParsing="false" text="Turbo Mode" />
-                                                   </buttons>
-                                                </ButtonBar>
-                                             </children>
-                                          </FlowPane>
-                                          <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="70.0" prefWidth="900.0">
-                                             <children>
-                                                <Label text="Controls" textAlignment="CENTER">
-                                                   <font>
-                                                      <Font name="Arial Black" size="15.0" />
-                                                   </font>
-                                                </Label>
-                                                <ButtonBar>
-                                                   <buttons>
-                                                      <FlowPane alignment="CENTER" orientation="VERTICAL" prefHeight="40.0">
-                                                         <children>
-                                                            <Label alignment="CENTER" contentDisplay="CENTER" text="Stop Words Factor" textAlignment="CENTER" />
-                                                            <Slider fx:id="GC_StopWordFactor2" max="25.0" value="12.5" />
-                                                         </children>
-                                                      </FlowPane>
-                                                      <FlowPane alignment="CENTER" layoutX="180.0" layoutY="10.0" orientation="VERTICAL" prefHeight="40.0">
-                                                         <children>
-                                                            <Label alignment="CENTER" contentDisplay="CENTER" text="Stop Words Factor II" textAlignment="CENTER" />
-                                                            <Slider fx:id="GC_StopWordFactorII2" max="25.0" value="12.5" />
-                                                         </children>
-                                                      </FlowPane>
-                                                      <FlowPane alignment="CENTER" layoutX="330.0" layoutY="10.0" orientation="VERTICAL" prefHeight="40.0">
-                                                         <children>
-                                                            <Label alignment="CENTER" contentDisplay="CENTER" text="Turbo Factor" textAlignment="CENTER" />
-                                                            <Slider fx:id="GC_TurboFactor2" max="1000.0" value="20.0" />
-                                                         </children>
-                                                      </FlowPane>
-                                                   </buttons>
-                                                </ButtonBar>
-                                             </children>
-                                          </FlowPane>
-                                       </children>
-                                    </FlowPane>
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </Tab>
-                     </tabs>
-                  </TabPane>
-               </center>
-            </BorderPane>
-            <Pane fx:id="paneView" layoutY="54.0" mouseTransparent="true" prefHeight="539.0" prefWidth="900.0" AnchorPane.bottomAnchor="207.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="54.0" />
-            <ButtonBar layoutX="621.0" layoutY="14.0">
-               <buttons>
-                  <Button fx:id="GC_Reset" mnemonicParsing="false" text="Reset" />
-                  <Button fx:id="GC_Help" mnemonicParsing="false" text="Help" />
-                  <Button fx:id="GC_Refresh" mnemonicParsing="false" text="Refresh" />
-               </buttons>
-            </ButtonBar>
-            <Label layoutX="14.0" layoutY="9.0" text="Runtime Efficiency Tester">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Label>
-         </AnchorPane>
-      </children>
-   </Pane>
+<AnchorPane fx:id="anchorPane" stylesheets="mondea_dark.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RuntimeTester.Controller">
+   <BorderPane fx:id="mainBorderView">
+      <center>
+         <Pane fx:id="paneView" mouseTransparent="true" BorderPane.alignment="CENTER" />
+      </center>
+      <bottom>
+         <BorderPane BorderPane.alignment="CENTER">
+            <center>
+               <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="BOTTOM_CENTER">
+                  <tabs>
+                     <Tab text="Custom">
+                        <content>
+                           <AnchorPane>
+                              <children>
+                                 <FlowPane>
+                                    <children>
+                                       <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="50.0" prefWidth="900.0">
+                                          <children>
+                                             <ButtonBar fx:id="reflexive_button_area" />
+                                          </children>
+                                       </FlowPane>
+                                    </children>
+                                 </FlowPane>
+                              </children>
+                           </AnchorPane>
+                        </content>
+                     </Tab>
+                     <Tab text="Settings">
+                        <content>
+                           <AnchorPane>
+                              <children>
+                                 <FlowPane>
+                                    <children>
+                                       <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="50.0" prefWidth="900.0">
+                                          <children>
+                                             <Label text="Twitter" textAlignment="CENTER">
+                                                <font>
+                                                   <Font name="Arial Black" size="15.0" />
+                                                </font>
+                                             </Label>
+                                          </children>
+                                       </FlowPane>
+                                       <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="50.0" prefWidth="900.0">
+                                          <children>
+                                             <Label text="Extras" textAlignment="CENTER">
+                                                <font>
+                                                   <Font name="Arial Black" size="15.0" />
+                                                </font>
+                                             </Label>
+                                             <ButtonBar>
+                                                <buttons>
+                                                   <CheckBox fx:id="GC_Twit_ConstructorII2" mnemonicParsing="false" text="Constructor II" />
+                                                   <CheckBox fx:id="GC_Twit_TrendingII2" mnemonicParsing="false" text="Trending II" />
+                                                   <CheckBox fx:id="GC_TurboMode2" mnemonicParsing="false" text="Turbo Mode" />
+                                                </buttons>
+                                             </ButtonBar>
+                                          </children>
+                                       </FlowPane>
+                                       <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="70.0" prefWidth="900.0">
+                                          <children>
+                                             <Label text="Controls" textAlignment="CENTER">
+                                                <font>
+                                                   <Font name="Arial Black" size="15.0" />
+                                                </font>
+                                             </Label>
+                                             <ButtonBar>
+                                                <buttons>
+                                                   <FlowPane alignment="CENTER" orientation="VERTICAL" prefHeight="40.0">
+                                                      <children>
+                                                         <Label alignment="CENTER" contentDisplay="CENTER" text="Stop Words Factor" textAlignment="CENTER" />
+                                                         <Slider fx:id="GC_StopWordFactor2" max="25.0" value="12.5" />
+                                                      </children>
+                                                   </FlowPane>
+                                                   <FlowPane alignment="CENTER" layoutX="180.0" layoutY="10.0" orientation="VERTICAL" prefHeight="40.0">
+                                                      <children>
+                                                         <Label alignment="CENTER" contentDisplay="CENTER" text="Stop Words Factor II" textAlignment="CENTER" />
+                                                         <Slider fx:id="GC_StopWordFactorII2" max="25.0" value="12.5" />
+                                                      </children>
+                                                   </FlowPane>
+                                                   <FlowPane alignment="CENTER" layoutX="330.0" layoutY="10.0" orientation="VERTICAL" prefHeight="40.0">
+                                                      <children>
+                                                         <Label alignment="CENTER" contentDisplay="CENTER" text="Turbo Factor" textAlignment="CENTER" />
+                                                         <Slider fx:id="GC_TurboFactor2" max="1000.0" value="20.0" />
+                                                      </children>
+                                                   </FlowPane>
+                                                </buttons>
+                                             </ButtonBar>
+                                          </children>
+                                       </FlowPane>
+                                    </children>
+                                 </FlowPane>
+                              </children>
+                           </AnchorPane>
+                        </content>
+                     </Tab>
+                  </tabs>
+               </TabPane>
+            </center>
+         </BorderPane>
+      </bottom>
+      <top>
+         <HBox BorderPane.alignment="CENTER">
+            <children>
+               <Label text="Runtime Efficiency Tester">
+                  <font>
+                     <Font size="25.0" />
+                  </font>
+               </Label>
+               <ButtonBar>
+                  <buttons>
+                     <Button fx:id="GC_Reset" mnemonicParsing="false" text="Reset" />
+                     <Button fx:id="GC_Help" mnemonicParsing="false" text="Help" />
+                     <Button fx:id="GC_Refresh" mnemonicParsing="false" text="Refresh" />
+                  </buttons>
+               </ButtonBar>
+            </children>
+         </HBox>
+      </top>
+   </BorderPane>
 </AnchorPane>

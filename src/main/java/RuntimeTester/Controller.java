@@ -17,6 +17,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -45,6 +46,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Controller implements Initializable {
+    @FXML
+    public BorderPane mainBorderView;
     //private TwitterBenchmark tBM;
     private ScheduledExecutorService scheduledExecutorService;
     private HashMap<String, BenchmarkItem> customBenchmarks;
@@ -143,7 +146,6 @@ public class Controller implements Initializable {
         private String expectedRuntime;
 
         public BenchmarkItem(Method m, benchmark a) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-            System.out.println("Trying to make benchmark item from: " + m.getName());
             name = a.name();
             description = a.category();
             expectedRuntime = a.expectedEfficiency();
@@ -151,9 +153,7 @@ public class Controller implements Initializable {
             if(!m.getReturnType().equals(Long.class) && !m.getReturnType().equals(long.class)) throw new IllegalArgumentException("Benchmark item must return Long or long");
             if(m.getParameterCount() != 1 ||
                     (!m.getParameters()[0].getType().equals(Long.class) &&
-                            !m.getParameters()[0].getType().equals(long.class) &&
-                            !m.getParameters()[0].getType().equals(int.class) &&
-                            !m.getParameters()[0].getType().equals(Integer.class))) throw new IllegalArgumentException("Benchmark item must take a Long, long, int, or Integer as input");
+                            !m.getParameters()[0].getType().equals(long.class))) throw new IllegalArgumentException("Benchmark item must take a Long, long, int, or Integer as input");
             invokable = m;
             //Constructor c = invokable.getClass().getConstructor();      //TODO: How in the fuck constructor calls?
             //c.setAccessible(true);
@@ -173,7 +173,7 @@ public class Controller implements Initializable {
 
         public Long run(Long intensity) throws InvocationTargetException, IllegalAccessException, InstantiationException {
             counter = intensity;
-            System.out.println("Invoking run of " + invokable.getName());
+            //System.out.println("Invoking run of " + invokable.getName());
             return (Long) invokable.invoke(testClass, intensity);
         }
 
@@ -187,7 +187,7 @@ public class Controller implements Initializable {
         }
 
         private void bindButton(ActionEvent e) {
-            resetButtons();
+            initalizeGraph();
         }
 
     }
@@ -235,8 +235,9 @@ public class Controller implements Initializable {
     }
 
     private void resetButtons() {
-        for (CheckBox box : toggles) {
-            box.setSelected(false);
+        for (BenchmarkItem item : customBenchmarks.values()) {
+            item.getCheckbox().setSelected(false);
+            item.setCounter(0);
         }
         initalizeGraph();
     }
@@ -245,7 +246,6 @@ public class Controller implements Initializable {
         try {
             scheduledExecutorService.shutdownNow();
         } catch (NullPointerException e) {
-            //System.out.println("Starting plot");
         }
         paneView.getChildren().clear();
         NumberAxis yAxis = new NumberAxis();
@@ -268,7 +268,6 @@ public class Controller implements Initializable {
 
         for (BenchmarkItem item : customBenchmarks.values()) {  //TODO: do this better for reflection
             if (item.getCheckbox().isSelected()) {
-                System.out.println("Plotting item " + item.getName());
                 XYChart.Series<String, Number> series = new XYChart.Series<>();
                 series.setName(item.getName());  //TODO: Better naming
                 plotsRunTime.put(series, 0L);
@@ -276,14 +275,11 @@ public class Controller implements Initializable {
         }
 
         lineChart.getData().addAll(plotsRunTime.keySet());
-        lineChart.setPrefSize(900, 500);
-        paneView.getChildren().add(lineChart);
-
-        scheduledExecutorService = Executors.newScheduledThreadPool(8);
+        mainBorderView.setCenter(lineChart);
+        scheduledExecutorService = Executors.newScheduledThreadPool(lineChart.getData().size());
 
         AtomicLong counter = new AtomicLong();
         scheduledExecutorService.scheduleAtFixedRate(() -> {
-            System.out.println("hello from ses");
             counter.getAndIncrement();
             for (Map.Entry<XYChart.Series<String, Number>, Long> entry : plotsRunTime.entrySet()) {
                 entry.setValue(ComputeRuntime(entry.getKey().getName(), counter.get()));
@@ -292,7 +288,6 @@ public class Controller implements Initializable {
             Platform.runLater(() -> {
                 for (Map.Entry<XYChart.Series<String, Number>, Long> entry : plotsRunTime.entrySet()) {
                     entry.getKey().getData().add(new XYChart.Data<String, Number>(Long.toString(counter.get()), entry.getValue()));
-                    System.out.println(entry.getValue());
                     if (entry.getKey().getData().size() > 75) {
                         lineChart.setVerticalGridLinesVisible(false);
                         lineChart.setHorizontalGridLinesVisible(false);
@@ -305,7 +300,7 @@ public class Controller implements Initializable {
     }
 
     private long ComputeRuntime(String input, Long count) {
-        System.out.println("Computing runtime of " + input + " at count " + count);
+        //System.out.println("Computing runtime of " + input + " at count " + count);
         if (GC_TurboMode.isSelected()) {
             double amount = Double.valueOf(count);
             amount *= GC_TurboFactor.getValue();
