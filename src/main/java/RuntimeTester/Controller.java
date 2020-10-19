@@ -10,10 +10,9 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 
 import java.awt.*;
 import java.io.IOException;
@@ -41,8 +40,7 @@ public class Controller implements Initializable {
     @FXML
     public BorderPane mainBorderView;
     public Button buttom_darkMode;
-    public ScrollPane reflexScroller;
-    public FlowPane reflexiveButtonArea;
+    public VBox reflexiveButtonArea;
     public Label stepTimeDisplay;
     int graphSpeed = 250;
     private ScheduledExecutorService scheduledExecutorService;
@@ -67,7 +65,9 @@ public class Controller implements Initializable {
     }
 
     private int compareBenchmarkItems(BenchmarkItem a, BenchmarkItem b) {
-        return a.getCategory().compareTo(b.getCategory());
+        if (a.getCategory().equals("Other")) return Integer.MAX_VALUE;       //Unspecified at the bottom
+        //if(a.getCategory().equals("Math demos")) return Integer.MIN_VALUE;  //Math demos at the top
+        return a.getCategory().compareTo(b.getCategory());                  //Else alphabetical
     }
 
     private void addReflexiveBenchmarks() {

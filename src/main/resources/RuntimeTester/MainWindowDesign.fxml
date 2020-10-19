@@ -6,15 +6,13 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="mainBorderView" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="RuntimeTester.Controller">
     <left>
-        <FlowPane hgap="20" maxWidth="100" orientation="VERTICAL">
-            <FlowPane fx:id="reflexiveButtonArea" hgap="10" orientation="VERTICAL" vgap="10">
+            <VBox fx:id="reflexiveButtonArea">
                 <Label text="Methods">
                     <font>
                         <Font size="25.0"/>
                     </font>
                 </Label>
-            </FlowPane>
-        </FlowPane>
+            </VBox>
     </left>
     <bottom>
         <HBox BorderPane.alignment="BOTTOM_CENTER">
