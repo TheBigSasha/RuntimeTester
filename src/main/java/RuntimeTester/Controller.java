@@ -173,7 +173,7 @@ public class Controller implements Initializable {
 
         public Long run(Long intensity) throws InvocationTargetException, IllegalAccessException, InstantiationException {
             counter = intensity;
-            //System.out.println("Invoking run of " + invokable.getName());
+            System.out.println("Invoking run of " + invokable.getName());
             return (Long) invokable.invoke(testClass, intensity);
         }
 
@@ -276,7 +276,7 @@ public class Controller implements Initializable {
 
         lineChart.getData().addAll(plotsRunTime.keySet());
         mainBorderView.setCenter(lineChart);
-        scheduledExecutorService = Executors.newScheduledThreadPool(lineChart.getData().size());
+        scheduledExecutorService = Executors.newScheduledThreadPool(lineChart.getData().size() + 1);
 
         AtomicLong counter = new AtomicLong();
         scheduledExecutorService.scheduleAtFixedRate(() -> {
@@ -300,8 +300,9 @@ public class Controller implements Initializable {
     }
 
     private long ComputeRuntime(String input, Long count) {
-        //System.out.println("Computing runtime of " + input + " at count " + count);
+        System.out.println("Computing runtime of " + input + " at count " + count);
         if (GC_TurboMode.isSelected()) {
+            System.out.println("turbo is on");
             double amount = Double.valueOf(count);
             amount *= GC_TurboFactor.getValue();
             count = Math.round(amount);
