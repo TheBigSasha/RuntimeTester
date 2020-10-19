@@ -3,51 +3,46 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<BorderPane fx:id="mainBorderView" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="RuntimeTester.Controller">
-    <bottom>
-            <FlowPane orientation="HORIZONTAL" hgap="20" alignment="BOTTOM_CENTER">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="mainBorderView" xmlns="http://javafx.com/javafx/11.0.1"
+            fx:controller="RuntimeTester.Controller">
+    <left>
+        <FlowPane hgap="20" maxWidth="100" orientation="VERTICAL">
+            <FlowPane fx:id="reflexiveButtonArea" hgap="10" orientation="VERTICAL" vgap="10">
                 <Label text="Methods">
-                <font>
-                    <Font size="25.0"/>
-                </font>
-                </Label>
-                <FlowPane fx:id="reflexiveButtonArea" orientation="HORIZONTAL" prefHeight="30" hgap="10" vgap="10" alignment="CENTER">
-                </FlowPane>
-            </FlowPane>
-    </bottom>
-    <top>
-        <HBox BorderPane.alignment="CENTER">
-            <children>
-                <Label text="Runtime Efficiency Tester">
                     <font>
                         <Font size="25.0"/>
                     </font>
                 </Label>
-                <ButtonBar>
-                    <buttons>
-                        <Button fx:id="GC_Reset" mnemonicParsing="false" text="Reset"/>
-                        <Button fx:id="GC_Help" mnemonicParsing="false" text="Help"/>
-                        <Button fx:id="GC_Refresh" mnemonicParsing="false" text="Refresh"/>
-                        <Button fx:id="buttom_darkMode" text="Light theme"/>
-                        <VBox>
+            </FlowPane>
+        </FlowPane>
+    </left>
+    <bottom>
+        <HBox BorderPane.alignment="BOTTOM_CENTER">
+            <children>
+                <HBox alignment="BOTTOM_CENTER">
+
+                    <Button fx:id="GC_Reset" text="Reset"/>
+                    <Button fx:id="GC_Help" text="Help"/>
+                    <Button fx:id="GC_Refresh" text="Refresh"/>
+                    <Button fx:id="buttom_darkMode" text="Light theme"/>
+                    <VBox>
                         <Label alignment="CENTER" contentDisplay="CENTER" text="Steps per Iteration"
                                textAlignment="CENTER"/>
-                        <Slider fx:id="GC_TurboFactor" max="5000.0" value="1.0" min="1"/>
-                        </VBox>
-                        <VBox>
-                        <HBox><Label alignment="CENTER" contentDisplay="CENTER" text="Adjust Step Time    "
-                               textAlignment="CENTER"/>
-                            <Label alignment="CENTER" contentDisplay="CENTER" fx:id="stepTimeDisplay"
+                        <Slider fx:id="GC_TurboFactor" max="5000.0" min="1" value="1.0"/>
+                    </VBox>
+                    <VBox>
+                        <HBox>
+                            <Label alignment="CENTER" contentDisplay="CENTER" text="Adjust Step Time    "
+                                   textAlignment="CENTER"/>
+                            <Label fx:id="stepTimeDisplay" alignment="CENTER" contentDisplay="CENTER"
                                    textAlignment="CENTER"/>
                         </HBox>
-                        <Slider fx:id="GC_AdjustmentFactor" max="2.0" value="0.1" showTickLabels="true" min="0.01"/>
-                        </VBox>
-                    </buttons>
-                </ButtonBar>
+                        <Slider fx:id="GC_AdjustmentFactor" max="2.0" min="0.01" showTickLabels="true" value="0.1"/>
+                    </VBox>
+                </HBox>
             </children>
         </HBox>
-    </top>
+    </bottom>
     <right>
 
     </right>

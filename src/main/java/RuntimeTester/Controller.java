@@ -9,12 +9,11 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
-import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-
 
 import java.awt.*;
 import java.io.IOException;
@@ -38,7 +37,7 @@ public class Controller implements Initializable {
     public FlowPane reflexiveButtonArea;
     public Label stepTimeDisplay;
 
-    private Boolean GC_TurboMode = true;
+    private final Boolean GC_TurboMode = true;
     private ScheduledExecutorService scheduledExecutorService;
     private HashMap<String, BenchmarkItem> customBenchmarks;
     int graphSpeed = 250;
@@ -64,173 +63,15 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
         addListeners();
-        initalizeGraph();
         adjustSpeedofMathMethods();
         enableDarkTheme();
-
+        initalizeGraph();
     }
 
     private void addReflexiveBenchmarks() {
         for(BenchmarkItem item : customBenchmarks.values()){
             reflexiveButtonArea.getChildren().add(item.getCheckbox());
         }
-    }
-
-    private class BenchmarkItem{
-        public long getCounter() {
-            return counter;
-        }
-
-        public void setCounter(long counter) {
-            this.counter = counter;
-        }
-
-        public String getName() {
-            StringBuilder sb = new StringBuilder();
-
-            if(name != null && !name.equals("")){ sb.append(name);}else {
-                sb.append(invokable.getName());
-            }
-
-            if(!expectedRuntime.equals("O(?)")) sb.append(" ").append(expectedRuntime);
-            return sb.toString();
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        private final Method invokable;
-        private long counter;
-        private String name;
-        private String description;
-        private CheckBox box;
-        private Object testClass;
-        private String expectedRuntime;
-
-        public BenchmarkItem(Method m, benchmark a) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-            name = a.name();
-            description = a.category();
-            expectedRuntime = a.expectedEfficiency();
-            counter = 0l;
-            if(!m.getReturnType().equals(Long.class) && !m.getReturnType().equals(long.class)) throw new IllegalArgumentException("Benchmark item must return Long or long");
-            if(m.getParameterCount() != 1 ||
-                    (!m.getParameters()[0].getType().equals(Long.class) &&
-                            !m.getParameters()[0].getType().equals(long.class))) throw new IllegalArgumentException("Benchmark item must take a Long, long, int, or Integer as input");
-            invokable = m;
-            //Constructor c = invokable.getClass().getConstructor();      //TODO: How in the fuck constructor calls?
-            //c.setAccessible(true);
-            testClass  = new BenchmarkDefinitions();
-            invokable.setAccessible(true);
-            box = new CheckBox(getName());
-            box.setSelected(true);
-            box.setOnAction(this::bindButton);
-            Tooltip t = new Tooltip();
-            StringBuilder sb = new StringBuilder();
-            sb.append("Declared method name: ").append(invokable.getName());
-            if(!a.description().equals("")){
-                sb.append(a.description());
-            }
-            t.setText(sb.toString());
-            box.setTooltip(t);
-        }
-
-        public Long run(Long intensity) throws InvocationTargetException, IllegalAccessException, InstantiationException {
-            counter = intensity;
-            System.out.println("Invoking run of " + invokable.getName());
-            return (Long) invokable.invoke(testClass, intensity);
-        }
-
-        public long iterate() throws InvocationTargetException, IllegalAccessException, InstantiationException {
-            counter++;
-            return run(counter);
-        }
-
-        public CheckBox getCheckbox(){
-         return box;
-        }
-
-        private void bindButton(ActionEvent e) {
-            initalizeGraph();
-        }
-
-    }
-
-    private void reflexiveGetBenchmarkables() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        customBenchmarks = new HashMap<>();
-        /*Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .setUrls(ClasspathHelper.getUrlForClass(PolynomialBenchmark.class))
-                .setScanners(new MethodAnnotationsScanner()));
-
-        Set<Method> methods = reflections.getMethodsAnnotatedWith(benchmark.class);*/
-        for(Method m : BenchmarkDefinitions.class.getMethods()) {        //TODO: generalize
-            Annotation[] annotations = m.getAnnotations();
-            if (annotations.length == 0) continue;
-            for (Annotation a : annotations) {
-                if (a instanceof benchmark) {
-                    benchmark bm = (benchmark) a;
-                    BenchmarkItem item =new BenchmarkItem(m,bm);
-                    customBenchmarks.put(item.getCheckbox().getText(), item);
-                }
-            }
-        }
-    }
-
-
-
-    @FXML
-
-    private void addListeners() {
-        GC_Reset.setOnAction(e -> resetButtons());
-        GC_Refresh.setOnAction(e -> initalizeGraph());
-        GC_Help.setOnAction(e -> openHelpPage());
-        buttom_darkMode.setOnAction(e -> toggleDarkTheme());
-        GC_AdjustmentFactor.setOnMouseEntered(e -> adjustSpeedofMathMethods());
-        GC_AdjustmentFactor.setOnMouseClicked(e -> adjustSpeedofMathMethods());
-        GC_AdjustmentFactor.setOnTouchPressed(e -> adjustSpeedofMathMethods());
-
-    }
-
-    private void adjustSpeedofMathMethods() {
-        BenchmarkDefinitions.setAdjustmentFactor(GC_AdjustmentFactor.getValue());
-        stepTimeDisplay.setText(String.valueOf(BenchmarkDefinitions.getSimulationSpeed()));
-    }
-
-    private void toggleDarkTheme() {
-        if(mainBorderView.getStylesheets().contains(darkThemeCSS)){
-            buttom_darkMode.setText("Dark theme");
-
-            disableDarkTheme();
-        }else{
-            buttom_darkMode.setText("Light theme");
-            enableDarkTheme();
-        }
-    }
-
-    private void openHelpPage() {
-        if (Desktop.isDesktopSupported()) {
-            try {
-                Desktop.getDesktop().browse(new URI("https://sashaphoto.ca/COMP250FinalDebuggerHelp/"));
-            } catch (IOException | URISyntaxException e1) {
-                e1.printStackTrace();
-            }
-        }
-    }
-
-    private void resetButtons() {
-        for (BenchmarkItem item : customBenchmarks.values()) {
-            item.getCheckbox().setSelected(false);
-            item.setCounter(0);
-        }
-        initalizeGraph();
     }
 
     private void initalizeGraph() {
@@ -275,7 +116,7 @@ public class Controller implements Initializable {
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             counter.get();
             if (GC_TurboMode) {
-                System.out.println("turbo is on");
+                //System.out.println("turbo is on");
                 double amount = 1.0;
                 amount *= GC_TurboFactor.getValue();
                 long count = Math.round(amount);
@@ -305,16 +146,175 @@ public class Controller implements Initializable {
 
     }
 
-    private long ComputeRuntime(String input, Long count) {
-        System.out.println("Computing runtime of " + input + " at count " + count);
+    private void reflexiveGetBenchmarkables() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        customBenchmarks = new HashMap<>();
+        /*Reflections reflections = new Reflections(new ConfigurationBuilder()
+                .setUrls(ClasspathHelper.getUrlForClass(PolynomialBenchmark.class))
+                .setScanners(new MethodAnnotationsScanner()));
 
-          try{
-              System.out.println("Enter try");
-              return customBenchmarks.get(input).run(count);
-          } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-              e.printStackTrace();
-              return 0L;
-          }
+        Set<Method> methods = reflections.getMethodsAnnotatedWith(benchmark.class);*/
+        for (Method m : BenchmarkDefinitions.class.getMethods()) {        //TODO: generalize
+            Annotation[] annotations = m.getAnnotations();
+            if (annotations.length == 0) continue;
+            for (Annotation a : annotations) {
+                if (a instanceof benchmark) {
+                    benchmark bm = (benchmark) a;
+                    BenchmarkItem item = new BenchmarkItem(m, bm);
+                    customBenchmarks.put(item.getCheckbox().getText(), item);
+                }
+            }
+        }
+    }
+
+
+    @FXML
+
+    private void addListeners() {
+        GC_Reset.setOnAction(e -> resetButtons());
+        GC_Refresh.setOnAction(e -> initalizeGraph());
+        GC_Help.setOnAction(e -> openHelpPage());
+        buttom_darkMode.setOnAction(e -> toggleDarkTheme());
+        GC_AdjustmentFactor.setOnMouseEntered(e -> adjustSpeedofMathMethods());
+        GC_AdjustmentFactor.setOnMouseClicked(e -> adjustSpeedofMathMethods());
+        GC_AdjustmentFactor.setOnTouchPressed(e -> adjustSpeedofMathMethods());
+
+    }
+
+    private void adjustSpeedofMathMethods() {
+        BenchmarkDefinitions.setAdjustmentFactor(GC_AdjustmentFactor.getValue());
+        stepTimeDisplay.setText(String.valueOf(BenchmarkDefinitions.getSimulationSpeed()));
+    }
+
+    private void toggleDarkTheme() {
+        if (mainBorderView.getStylesheets().contains(darkThemeCSS)) {
+            buttom_darkMode.setText("Dark theme");
+
+            disableDarkTheme();
+        } else {
+            buttom_darkMode.setText("Light theme");
+            enableDarkTheme();
+        }
+    }
+
+    private void openHelpPage() {
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().browse(new URI("https://sashaphoto.ca/COMP250FinalDebuggerHelp/"));
+            } catch (IOException | URISyntaxException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    private void resetButtons() {
+        for (BenchmarkItem item : customBenchmarks.values()) {
+            item.getCheckbox().setSelected(false);
+            item.setCounter(0);
+        }
+        initalizeGraph();
+    }
+
+    private long ComputeRuntime(String input, Long count) {
+        //System.out.println("Computing runtime of " + input + " at count " + count);
+
+        try {
+            return customBenchmarks.get(input).run(count);
+        } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+
+    private class BenchmarkItem {
+        public long getCounter() {
+            return counter;
+        }
+
+        public void setCounter(long counter) {
+            this.counter = counter;
+        }
+
+        public String getName() {
+            StringBuilder sb = new StringBuilder();
+
+            if (name != null && !name.equals("")) {
+                sb.append(name);
+            } else {
+                sb.append(invokable.getName());
+            }
+
+            if (!expectedRuntime.equals("O(?)")) sb.append(" ").append(expectedRuntime);
+            return sb.toString();
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        private final Method invokable;
+        private long counter;
+        private String name;
+        private String description;
+        private final CheckBox box;
+        private final Object testClass;
+        private final String expectedRuntime;
+
+        public BenchmarkItem(Method m, benchmark a) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+            name = a.name();
+            description = a.category();
+            expectedRuntime = a.expectedEfficiency();
+            counter = 0l;
+            if (!m.getReturnType().equals(Long.class) && !m.getReturnType().equals(long.class))
+                throw new IllegalArgumentException("Benchmark item must return Long or long");
+            if (m.getParameterCount() != 1 ||
+                    (!m.getParameters()[0].getType().equals(Long.class) &&
+                            !m.getParameters()[0].getType().equals(long.class)))
+                throw new IllegalArgumentException("Benchmark item must take a Long, long, int, or Integer as input");
+            invokable = m;
+            //Constructor c = invokable.getClass().getConstructor();      //TODO: How in the fuck constructor calls?
+            //c.setAccessible(true);
+            testClass = new BenchmarkDefinitions();
+            invokable.setAccessible(true);
+            box = new CheckBox(getName());
+            box.setSelected(true);
+            box.setOnAction(this::bindButton);
+            Tooltip t = new Tooltip();
+            StringBuilder sb = new StringBuilder();
+            sb.append("Declared method name: ").append(invokable.getName());
+            if (!a.description().equals("")) {
+                sb.append(a.description());
+            }
+            t.setText(sb.toString());
+            box.setTooltip(t);
+        }
+
+        public Long run(Long intensity) throws InvocationTargetException, IllegalAccessException, InstantiationException {
+            counter = intensity;
+            //System.out.println("Invoking run of " + invokable.getName());
+            return (Long) invokable.invoke(testClass, intensity);
+        }
+
+        public long iterate() throws InvocationTargetException, IllegalAccessException, InstantiationException {
+            counter++;
+            return run(counter);
+        }
+
+        public CheckBox getCheckbox() {
+            return box;
+        }
+
+        private void bindButton(ActionEvent e) {
+            initalizeGraph();
+        }
+
     }
 
     private void enableDarkTheme() {
