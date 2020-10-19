@@ -23,7 +23,7 @@ dependencies {
 sourceSets {
     main {
         resources {
-            srcDirs = ["src/main/resources"]
+            srcDirs = ["src/main/resources","src/main/java","src/main/"]
             includes = ["**/*.css"]
             includes = ["**/*.fxml"]
         }

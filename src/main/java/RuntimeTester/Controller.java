@@ -64,7 +64,7 @@ public class Controller implements Initializable {
     @FXML
     private Button GC_Reset, GC_Help, GC_Refresh;
 
-    private static final String darkThemeCSS = "mondea_dark.css";
+    public static final String darkThemeCSS = "https://raw.githubusercontent.com/joffrey-bion/javafx-themes/master/css/modena_dark.css";
 
 
     @FXML
@@ -212,8 +212,11 @@ public class Controller implements Initializable {
 
     private void toggleDarkTheme() {
         if(mainBorderView.getStylesheets().contains(darkThemeCSS)){
+            buttom_darkMode.setText("Dark theme");
+
             disableDarkTheme();
         }else{
+            buttom_darkMode.setText("Light theme");
             enableDarkTheme();
         }
     }
@@ -319,12 +322,21 @@ public class Controller implements Initializable {
     }
 
     private void enableDarkTheme() {
+        buttom_darkMode.setText("Light theme");
+        mainBorderView.getStylesheets().remove(lightThemeCSS);
         mainBorderView.getStylesheets().add(darkThemeCSS);
+
     }
 
 
 
     private void disableDarkTheme() {
+        buttom_darkMode.setText("Dark theme");
         mainBorderView.getStylesheets().remove(darkThemeCSS);
+        mainBorderView.getStylesheets().add(lightThemeCSS);
     }
+
+    public static final String lightThemeCSS = "https://raw.githubusercontent.com/StaticallyTypedRice/GoliathCSS/master/src/goliath.css/classes/goliath/css/Goliath-Light.css";     //TODO: Find good light theme
+    //public static final String lightThemeCSS = "https://raw.githubusercontent.com/StaticallyTypedRice/GoliathCSS/master/src/goliath.css/classes/goliath/css/Goliath-Envy.css";    //TODO: this dark theme very cool
+    //public static final String lightThemeCSS = "https://raw.githubusercontent.com/bullheadandplato/MaterialFX/master/material-fx-v0_3.css";
 }
