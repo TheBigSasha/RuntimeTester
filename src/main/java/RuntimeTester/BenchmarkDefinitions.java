@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class BenchmarkDefinitions {
     private static int speed = 0;
     private static RandomTweets rand;
-    private static int seed = 24601;
+    private static final int seed = 24601;
 
     public static double getAdjustmentFactor() {
         return adjustmentFactor;
@@ -47,38 +47,17 @@ public class BenchmarkDefinitions {
         System.out.println("Slowness of your computer is " + speed);
     }
 
-    public BenchmarkDefinitions(){
-        if(rand == null){
+    public BenchmarkDefinitions() {
+        if (rand == null) {
             rand = new RandomTweets(seed);
         }
         determineSpeed();
     }
 
-    @benchmark(name = "traverse list", category = "math demos", expectedEfficiency = "O(N)")
-    public Long testPop(Long size){
-        //System.out.println("Invoked benchmark for size " + size);
-        return size * getSimulationSpeed();
-    }
-
-    @benchmark(name = "sort", expectedEfficiency = "o(n^2)")
-    public Long slowSort(Long size){
-        return size * size * getSimulationSpeed();
-    }
-
-    @benchmark(name = "fast sorting ", description = "lol kek", expectedEfficiency = "o(n log(n))")
-    public long fastSort(long size){
-        return (int) (size * Math.log(size)) * getSimulationSpeed();
-    }
-
-    @benchmark(name="superfast", description =" this one is sanic fast", expectedEfficiency = "O(1)")
-    public long oOfOne(long size){
-        return getSimulationSpeed();
-    }
-
-    @benchmark(name="java::ArrayList.sort", expectedEfficiency = "O(n log(n)")
-    public static long arraysSort(long size){
+    @benchmark(name = "java::ArrayList.sort", expectedEfficiency = "O(n log(n))")
+    public static long arraysSort(long size) {
         ArrayList<Date> dataset = new ArrayList<>();
-        for(long i = 0; i < size; i++){
+        for (long i = 0; i < size; i++) {
             dataset.add(rand.nextDate());
         }
         long startTime = System.nanoTime();
@@ -87,10 +66,41 @@ public class BenchmarkDefinitions {
         return endTime - startTime;
     }
 
-    @benchmark(name="java::queue.deqeue", expectedEfficiency = "O(1)")
-    public long enqueueTest(long size){
+    @benchmark(name = "traverse list", category = "math demos", expectedEfficiency = "O(N)")
+    public Long n(Long size) {
+        //System.out.println("Invoked benchmark for size " + size);
+        return size * getSimulationSpeed();
+    }
+
+    @benchmark(name = "sort", expectedEfficiency = "o(n^2)")
+    public Long nSquared(Long size) {
+        return size * size * getSimulationSpeed();
+    }
+
+    @benchmark(name = "fast sorting ", description = "lol kek", expectedEfficiency = "o(n log(n))")
+    public long nLogN(long size) {
+        return (int) (size * Math.log(size)) * getSimulationSpeed();
+    }
+
+    @benchmark(name = "superfast", description = " this one is sanic fast", expectedEfficiency = "O(1)")
+    public long one(long size) {
+        return getSimulationSpeed();
+    }
+
+   /* @benchmark(name="the worst", expectedEfficiency = "O(n!)")
+    public static long nFactorial(long size){
+        long n=1;
+        long factorial = getSimulationSpeed();
+        for(n=1; n<= size; n++){
+            factorial=factorial*n;
+        }
+        return factorial;
+    }*/     //This breaks the graph by exploding to massive size
+
+    @benchmark(name = "java::queue.deqeue", expectedEfficiency = "O(1)")
+    public long enqueueTest(long size) {
         Queue<Date> dataset = new ConcurrentLinkedQueue<>();
-        for(long i = 0; i < size; i++){
+        for (long i = 0; i < size; i++) {
             dataset.add(rand.nextDate());
         }
         long startTime = System.nanoTime();
