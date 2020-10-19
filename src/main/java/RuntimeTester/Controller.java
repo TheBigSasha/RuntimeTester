@@ -163,8 +163,8 @@ public class Controller implements Initializable {
             box.setOnAction(this::bindButton);
             Tooltip t = new Tooltip();
             StringBuilder sb = new StringBuilder();
-            sb.append("Declared method name: " + invokable.getName());
-            if(a.description() != ""){
+            sb.append("Declared method name: ").append(invokable.getName());
+            if(!a.description().equals("")){
                 sb.append(a.description());
             }
             t.setText(sb.toString());
@@ -226,9 +226,7 @@ public class Controller implements Initializable {
         if (Desktop.isDesktopSupported()) {
             try {
                 Desktop.getDesktop().browse(new URI("https://sashaphoto.ca/COMP250FinalDebuggerHelp/"));
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } catch (URISyntaxException e1) {
+            } catch (IOException | URISyntaxException e1) {
                 e1.printStackTrace();
             }
         }
@@ -263,14 +261,17 @@ public class Controller implements Initializable {
         lineChart.setTitle("Runtime Efficiency");
         lineChart.setAnimated(true); // animations
         ArrayList<XYChart.Series<String, Number>> plots = new ArrayList<XYChart.Series<String, Number>>();
-        HashMap<XYChart.Series<String, Number>, Long> plotsRunTime = new HashMap<XYChart.Series<String, Number>, Long>();
+        HashMap<XYChart.Series<String, Number>, Long[]> plotsRunTime = new HashMap<XYChart.Series<String, Number>, Long[]>();
 
 
         for (BenchmarkItem item : customBenchmarks.values()) {  //TODO: do this better for reflection
             if (item.getCheckbox().isSelected()) {
                 XYChart.Series<String, Number> series = new XYChart.Series<>();
                 series.setName(item.getName());  //TODO: Better naming
-                plotsRunTime.put(series, 0L);
+                Long[] content = new Long[2];
+                content[0] = 0L;
+                content[1] = 0L;
+                plotsRunTime.put(series, content);
             }
         }
 
@@ -281,13 +282,20 @@ public class Controller implements Initializable {
         AtomicLong counter = new AtomicLong();
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             counter.getAndIncrement();
-            for (Map.Entry<XYChart.Series<String, Number>, Long> entry : plotsRunTime.entrySet()) {
-                entry.setValue(ComputeRuntime(entry.getKey().getName(), counter.get()));
+            for (Map.Entry<XYChart.Series<String, Number>, Long[]> entry : plotsRunTime.entrySet()) {
+                long count = counter.get();
+                if (GC_TurboMode.isSelected()) {
+                    System.out.println("turbo is on");
+                    double amount = (double) count;
+                    amount *= GC_TurboFactor.getValue();
+                    count = Math.round(amount);
+                }
+                entry.setValue(new Long[]{ComputeRuntime(entry.getKey().getName(), count), count});
             }
 
             Platform.runLater(() -> {
-                for (Map.Entry<XYChart.Series<String, Number>, Long> entry : plotsRunTime.entrySet()) {
-                    entry.getKey().getData().add(new XYChart.Data<String, Number>(Long.toString(counter.get()), entry.getValue()));
+                for (Map.Entry<XYChart.Series<String, Number>, Long[]> entry : plotsRunTime.entrySet()) {
+                    entry.getKey().getData().add(new XYChart.Data<String, Number>(Long.toString(entry.getValue()[1]), entry.getValue()[0]));
                     if (entry.getKey().getData().size() > 75) {
                         lineChart.setVerticalGridLinesVisible(false);
                         lineChart.setHorizontalGridLinesVisible(false);
@@ -301,13 +309,9 @@ public class Controller implements Initializable {
 
     private long ComputeRuntime(String input, Long count) {
         System.out.println("Computing runtime of " + input + " at count " + count);
-        if (GC_TurboMode.isSelected()) {
-            System.out.println("turbo is on");
-            double amount = Double.valueOf(count);
-            amount *= GC_TurboFactor.getValue();
-            count = Math.round(amount);
-        }
+
           try{
+              System.out.println("Enter try");
               return customBenchmarks.get(input).run(count);
           } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
               e.printStackTrace();

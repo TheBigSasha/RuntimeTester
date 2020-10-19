@@ -24,6 +24,9 @@ public class PolynomialBenchmark {
         }else{
             speed = runs.get(15);
         }
+        if(speed == 0){
+            speed = 10000;
+        }
         System.out.println("Slowness of your computer is " + speed);
     }
     public PolynomialBenchmark(){
