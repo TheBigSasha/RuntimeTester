@@ -23,7 +23,7 @@ public class MainWindow extends Application {
     public void start(Stage primaryStage) throws Exception {
         //TODO: Make CSS theme work properly! (Gradle issue), Make dark theme toggleable
         Parent root = FXMLLoader.load(getClass().getResource("MainWindowDesign.fxml"));
-        primaryStage.setTitle("Runtime Efficiency Wizard - <3 sashaphoto.ca Tweet Visualizer");
+        primaryStage.setTitle("Runtime Efficiency Wizard - COMP250");
         Scene s = new Scene(root);
         //s.getStylesheets().add(Controller.darkThemeCSS);
         primaryStage.setScene(s);

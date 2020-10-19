@@ -10,7 +10,9 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 
 
 import java.awt.*;
@@ -32,6 +34,8 @@ public class Controller implements Initializable {
     public BorderPane mainBorderView;
     public CheckBox GC_TurboMode;
     public Button buttom_darkMode;
+    public ScrollPane reflexScroller;
+    public FlowPane reflexiveButtonArea;
 
     private ScheduledExecutorService scheduledExecutorService;
     private HashMap<String, BenchmarkItem> customBenchmarks;
@@ -46,10 +50,6 @@ public class Controller implements Initializable {
     private Button GC_Reset, GC_Help, GC_Refresh;
 
     public static final String darkThemeCSS = "https://raw.githubusercontent.com/joffrey-bion/javafx-themes/master/css/modena_dark.css";
-
-
-    @FXML
-    private ButtonBar reflexive_button_area;
 
 
 
@@ -69,7 +69,7 @@ public class Controller implements Initializable {
 
     private void addReflexiveBenchmarks() {
         for(BenchmarkItem item : customBenchmarks.values()){
-            reflexive_button_area.getButtons().add(item.getCheckbox());
+            reflexiveButtonArea.getChildren().add(item.getCheckbox());
         }
     }
 
@@ -190,6 +190,7 @@ public class Controller implements Initializable {
         GC_Refresh.setOnAction(e -> initalizeGraph());
         GC_Help.setOnAction(e -> openHelpPage());
         buttom_darkMode.setOnAction(e -> toggleDarkTheme());
+
     }
 
     private void toggleDarkTheme() {

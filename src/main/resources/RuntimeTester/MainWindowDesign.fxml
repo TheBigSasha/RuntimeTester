@@ -6,34 +6,15 @@
 <BorderPane fx:id="mainBorderView" xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="RuntimeTester.Controller">
     <bottom>
-        <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="BOTTOM_CENTER" prefHeight="160">
-            <tabs>
-                <Tab text="Custom">
-                    <content>
-                        <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL">
-                            <children>
-                                <ButtonBar fx:id="reflexive_button_area"/>
-                            </children>
-                        </FlowPane>
-                    </content>
-                </Tab>
-                <Tab text="Settings">
-                    <content>
-                        <FlowPane alignment="CENTER">
-                            <children>
-                                <Button fx:id="buttom_darkMode" text="Light theme"/>
-                                <Label alignment="CENTER" contentDisplay="CENTER" text="Turbo Factor"
-                                       textAlignment="CENTER"/>
-                                <Slider fx:id="GC_TurboFactor" max="5000.0" value="50.0"/>
-                                <CheckBox fx:id="GC_TurboMode" mnemonicParsing="false" text="Turbo Mode"/>
-                            </children>
-                        </FlowPane>
-
-
-                    </content>
-                </Tab>
-            </tabs>
-        </TabPane>
+            <FlowPane orientation="HORIZONTAL" hgap="20" alignment="BOTTOM_CENTER">
+                <Label text="Methods">
+                <font>
+                    <Font size="25.0"/>
+                </font>
+                </Label>
+                <FlowPane fx:id="reflexiveButtonArea" orientation="HORIZONTAL" prefHeight="30" hgap="10" vgap="10" alignment="CENTER">
+                </FlowPane>
+            </FlowPane>
     </bottom>
     <top>
         <HBox BorderPane.alignment="CENTER">
@@ -48,6 +29,11 @@
                         <Button fx:id="GC_Reset" mnemonicParsing="false" text="Reset"/>
                         <Button fx:id="GC_Help" mnemonicParsing="false" text="Help"/>
                         <Button fx:id="GC_Refresh" mnemonicParsing="false" text="Refresh"/>
+                        <Button fx:id="buttom_darkMode" text="Light theme"/>
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="Turbo Factor"
+                               textAlignment="CENTER"/>
+                        <Slider fx:id="GC_TurboFactor" max="5000.0" value="50.0"/>
+                        <CheckBox fx:id="GC_TurboMode" mnemonicParsing="false" text="Turbo Mode"/>
                     </buttons>
                 </ButtonBar>
             </children>
