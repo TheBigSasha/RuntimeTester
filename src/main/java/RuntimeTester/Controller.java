@@ -167,6 +167,7 @@ public class Controller implements Initializable {
     }
 
 
+
     @FXML
 
     private void addListeners() {
@@ -234,39 +235,6 @@ public class Controller implements Initializable {
             this.counter = counter;
         }
 
-        public String getName() {
-            StringBuilder sb = new StringBuilder();
-
-            if (name != null && !name.equals("")) {
-                sb.append(name);
-            } else {
-                sb.append(invokable.getName());
-            }
-
-            if (!expectedRuntime.equals("O(?)")) sb.append(" ").append(expectedRuntime);
-            return sb.toString();
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        private final Method invokable;
-        private long counter;
-        private String name;
-        private String description;
-        private final CheckBox box;
-        private final Object testClass;
-        private final String expectedRuntime;
-
         public BenchmarkItem(Method m, benchmark a) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
             name = a.name();
             description = a.category();
@@ -294,6 +262,39 @@ public class Controller implements Initializable {
             }
             t.setText(sb.toString());
             box.setTooltip(t);
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        private final Method invokable;
+        private long counter;
+        private String name;
+        private String description;
+        private final CheckBox box;
+        private final Object testClass;
+        private final String expectedRuntime;
+
+        public String getName() {
+            StringBuilder sb = new StringBuilder();
+
+            if (name != null && !name.equals("")) {
+                sb.append(name);
+            } else {
+                sb.append(invokable.getName());
+            }
+
+            if (!expectedRuntime.equals("O(?)")) sb.append(" ").append(expectedRuntime);
+            return sb.toString();
         }
 
         public Long run(Long intensity) throws InvocationTargetException, IllegalAccessException, InstantiationException {
