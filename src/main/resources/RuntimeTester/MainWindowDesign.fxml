@@ -30,10 +30,19 @@
                         <Button fx:id="GC_Help" mnemonicParsing="false" text="Help"/>
                         <Button fx:id="GC_Refresh" mnemonicParsing="false" text="Refresh"/>
                         <Button fx:id="buttom_darkMode" text="Light theme"/>
-                        <Label alignment="CENTER" contentDisplay="CENTER" text="Turbo Factor"
+                        <VBox>
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="Steps per Iteration"
                                textAlignment="CENTER"/>
-                        <Slider fx:id="GC_TurboFactor" max="5000.0" value="50.0"/>
-                        <CheckBox fx:id="GC_TurboMode" mnemonicParsing="false" text="Turbo Mode"/>
+                        <Slider fx:id="GC_TurboFactor" max="5000.0" value="1.0" min="1"/>
+                        </VBox>
+                        <VBox>
+                        <HBox><Label alignment="CENTER" contentDisplay="CENTER" text="Adjust Step Time    "
+                               textAlignment="CENTER"/>
+                            <Label alignment="CENTER" contentDisplay="CENTER" fx:id="stepTimeDisplay"
+                                   textAlignment="CENTER"/>
+                        </HBox>
+                        <Slider fx:id="GC_AdjustmentFactor" max="2.0" value="0.1" showTickLabels="true" min="0.01"/>
+                        </VBox>
                     </buttons>
                 </ButtonBar>
             </children>

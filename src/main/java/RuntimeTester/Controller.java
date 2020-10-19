@@ -10,6 +10,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -32,11 +33,12 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Controller implements Initializable {
     @FXML
     public BorderPane mainBorderView;
-    public CheckBox GC_TurboMode;
     public Button buttom_darkMode;
     public ScrollPane reflexScroller;
     public FlowPane reflexiveButtonArea;
+    public Label stepTimeDisplay;
 
+    private Boolean GC_TurboMode = true;
     private ScheduledExecutorService scheduledExecutorService;
     private HashMap<String, BenchmarkItem> customBenchmarks;
     int graphSpeed = 250;
@@ -45,7 +47,7 @@ public class Controller implements Initializable {
             "a bunch of songs (colossal)", "a bunch of songs (large)",
             "a custom webpage"));
     @FXML
-    private Slider GC_TurboFactor;
+    private Slider GC_TurboFactor, GC_AdjustmentFactor;
     @FXML
     private Button GC_Reset, GC_Help, GC_Refresh;
 
@@ -63,6 +65,7 @@ public class Controller implements Initializable {
         }
         addListeners();
         initalizeGraph();
+        adjustSpeedofMathMethods();
         enableDarkTheme();
 
     }
@@ -190,7 +193,15 @@ public class Controller implements Initializable {
         GC_Refresh.setOnAction(e -> initalizeGraph());
         GC_Help.setOnAction(e -> openHelpPage());
         buttom_darkMode.setOnAction(e -> toggleDarkTheme());
+        GC_AdjustmentFactor.setOnMouseEntered(e -> adjustSpeedofMathMethods());
+        GC_AdjustmentFactor.setOnMouseClicked(e -> adjustSpeedofMathMethods());
+        GC_AdjustmentFactor.setOnTouchPressed(e -> adjustSpeedofMathMethods());
 
+    }
+
+    private void adjustSpeedofMathMethods() {
+        BenchmarkDefinitions.setAdjustmentFactor(GC_AdjustmentFactor.getValue());
+        stepTimeDisplay.setText(String.valueOf(BenchmarkDefinitions.getSimulationSpeed()));
     }
 
     private void toggleDarkTheme() {
@@ -262,16 +273,18 @@ public class Controller implements Initializable {
 
         AtomicLong counter = new AtomicLong();
         scheduledExecutorService.scheduleAtFixedRate(() -> {
-            counter.getAndIncrement();
+            counter.get();
+            if (GC_TurboMode) {
+                System.out.println("turbo is on");
+                double amount = 1.0;
+                amount *= GC_TurboFactor.getValue();
+                long count = Math.round(amount);
+                counter.addAndGet(count);
+            }else{
+                counter.getAndIncrement();
+            }
             for (Map.Entry<XYChart.Series<String, Number>, Long[]> entry : plotsRunTime.entrySet()) {
-                long count = counter.get();
-                if (GC_TurboMode.isSelected()) {
-                    System.out.println("turbo is on");
-                    double amount = (double) count;
-                    amount *= GC_TurboFactor.getValue();
-                    count = Math.round(amount);
-                }
-                entry.setValue(new Long[]{ComputeRuntime(entry.getKey().getName(), count), count});
+                entry.setValue(new Long[]{ComputeRuntime(entry.getKey().getName(), counter.get()), counter.get()});
             }
 
             Platform.runLater(() -> {

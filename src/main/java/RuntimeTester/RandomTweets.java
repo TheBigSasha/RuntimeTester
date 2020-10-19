@@ -7,6 +7,9 @@ import javax.swing.text.html.parser.ParserDelegator;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -319,7 +322,7 @@ public class RandomTweets extends Random {
      * @return a tweet.
      */
     /*public Tweet nextTweet() {
-        String name = nextUserName();
+        String name = nextUserName();da
         pastUsers.add(name);
         return new Tweet(name, nextDate(), nextContent());
     }
@@ -513,7 +516,7 @@ public class RandomTweets extends Random {
      *
      * @return a date
      */
-    public String nextDate() {
+    public String nextDateString() {
         int year = 2009 + nextInt(11);
         int month = 1 + nextInt(11);
         int day = 1 + nextInt(27);
@@ -553,6 +556,15 @@ public class RandomTweets extends Random {
             sb.append(second);
         }
         return sb.toString();
+    }
+
+    public Date nextDate(){
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(nextDateString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
