@@ -29,10 +29,11 @@ public class PolynomialBenchmark {
         }
         System.out.println("Slowness of your computer is " + speed);
     }
+
     public PolynomialBenchmark(){
         determineSpeed();
     }
-    //TODO: set what is now 10,000 to be a time based on how fast your system is
+
     @benchmark(name = "pop", category = "linkedList methods")
     public Long testPop(Long size){
         //System.out.println("Invoked benchmark for size " + size);
