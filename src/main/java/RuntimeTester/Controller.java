@@ -208,7 +208,10 @@ public class Controller implements Initializable {
     private void addBenchmarks() {
         try {
             ArrayList<Class<?>> testClasses = new ArrayList<>();
+            testClasses.addAll(getClassesForPackage("Tutorial7"));
+            testClasses.addAll(getClassesForPackage("a2"));
             for(String s : this.getClass().getModule().getPackages()){      //TODO: It does not successfully query the Tutorial7 package?
+                //System.out.println("package named " + s + " was found in module");
                 if(!s.startsWith("javafx.") && !s.startsWith("com.sun.")) { //Ignores things we can't reflect
                     System.out.println("Querying package " + s);
                     try {
@@ -218,12 +221,14 @@ public class Controller implements Initializable {
                     }
                 }
             }
+
+
             for(Class c : testClasses) {
                 System.out.println("Querying class " + c.getName());
                 reflexiveGetBenchmarkables(c);
             }
             addReflexiveBenchmarks();
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
