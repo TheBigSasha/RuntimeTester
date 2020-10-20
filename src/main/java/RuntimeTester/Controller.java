@@ -208,7 +208,7 @@ public class Controller implements Initializable {
     private void addBenchmarks() {
         try {
             ArrayList<Class<?>> testClasses = new ArrayList<>();
-            for(String s : this.getClass().getModule().getPackages()){
+            for(String s : this.getClass().getModule().getPackages()){      //TODO: It does not successfully query the Tutorial7 package?
                 if(!s.startsWith("javafx.") && !s.startsWith("com.sun.")) { //Ignores things we can't reflect
                     System.out.println("Querying package " + s);
                     try {
