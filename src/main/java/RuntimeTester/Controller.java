@@ -16,19 +16,21 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class Controller implements Initializable {
     public static final String darkThemeCSS = "https://raw.githubusercontent.com/joffrey-bion/javafx-themes/master/css/modena_dark.css";
@@ -52,27 +54,190 @@ public class Controller implements Initializable {
     @FXML
     private Button GC_Reset, GC_Help, GC_Refresh;
 
+    /**
+     * Private helper method
+     *
+     * @param directory
+     *            The directory to start with
+     * @param pckgname
+     *            The package name to search for. Will be needed for getting the
+     *            Class object.
+     * @param classes
+     *            if a file isn't loaded but still is in the directory
+     * @throws ClassNotFoundException
+     */
+    private static void checkDirectory(File directory, String pckgname,
+                                       ArrayList<Class<?>> classes) throws ClassNotFoundException {
+        File tmpDirectory;
+
+        if (directory.exists() && directory.isDirectory()) {
+            final String[] files = directory.list();
+
+            for (final String file : files) {
+                if (file.endsWith(".class")) {
+                    try {
+                        classes.add(Class.forName(pckgname + '.'
+                                + file.substring(0, file.length() - 6)));
+                    } catch (final NoClassDefFoundError e) {
+                        // do nothing. this class hasn't been found by the
+                        // loader, and we don't care.
+                    }
+                } else if ((tmpDirectory = new File(directory, file))
+                        .isDirectory()) {
+                    checkDirectory(tmpDirectory, pckgname + "." + file, classes);
+                }
+            }
+        }
+    }
+
+    /**
+     * Private helper method.
+     *
+     * @param connection
+     *            the connection to the jar
+     * @param pckgname
+     *            the package name to search for
+     * @param classes
+     *            the current ArrayList of all classes. This method will simply
+     *            add new classes.
+     * @throws ClassNotFoundException
+     *             if a file isn't loaded but still is in the jar file
+     * @throws IOException
+     *             if it can't correctly read from the jar file.
+     */
+    private static void checkJarFile(JarURLConnection connection,
+                                     String pckgname, ArrayList<Class<?>> classes)
+            throws ClassNotFoundException, IOException {
+        final JarFile jarFile = connection.getJarFile();
+        final Enumeration<JarEntry> entries = jarFile.entries();
+        String name;
+
+        for (JarEntry jarEntry = null; entries.hasMoreElements()
+                && ((jarEntry = entries.nextElement()) != null);) {
+            name = jarEntry.getName();
+
+            if (name.contains(".class")) {
+                name = name.substring(0, name.length() - 6).replace('/', '.');
+
+                if (name.contains(pckgname)) {
+                    classes.add(Class.forName(name));
+                }
+            }
+        }
+    }
+
+    /**
+     * Attempts to list all the classes in the specified package as determined
+     * by the context class loader
+     *
+     * @param pckgname
+     *            the package name to search
+     * @return a list of classes that exist within that package
+     * @throws ClassNotFoundException
+     *             if something went wrong
+     */
+    public static ArrayList<Class<?>> getClassesForPackage(String pckgname)
+            throws ClassNotFoundException {
+        final ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+
+        try {
+            final ClassLoader cld = Thread.currentThread()
+                    .getContextClassLoader();
+
+            if (cld == null)
+                throw new ClassNotFoundException("Can't get class loader.");
+
+            final Enumeration<URL> resources = cld.getResources(pckgname
+                    .replace('.', '/'));
+            URLConnection connection;
+
+            for (URL url = null; resources.hasMoreElements()
+                    && ((url = resources.nextElement()) != null);) {
+                try {
+                    connection = url.openConnection();
+
+                    if (connection instanceof JarURLConnection) {
+                        checkJarFile((JarURLConnection) connection, pckgname,
+                                classes);
+                    } else if (connection != null) {    //instanceof FileURLConnection
+                        try {
+                            checkDirectory(
+                                    new File(URLDecoder.decode(url.getPath(),
+                                            "UTF-8")), pckgname, classes);
+                        } catch (final UnsupportedEncodingException ex) {
+                            throw new ClassNotFoundException(
+                                    pckgname
+                                            + " does not appear to be a valid package (Unsupported encoding)",
+                                    ex);
+                        }
+                    } else
+                        throw new ClassNotFoundException(pckgname + " ("
+                                + url.getPath()
+                                + ") does not appear to be a valid package");
+                } catch (final IOException ioex) {
+                    throw new ClassNotFoundException(
+                            "IOException was thrown when trying to get all resources for "
+                                    + pckgname, ioex);
+                }
+            }
+        } catch (final NullPointerException ex) {
+            throw new ClassNotFoundException(
+                    pckgname
+                            + " does not appear to be a valid package (Null pointer exception)",
+                    ex);
+        } catch (final IOException ioex) {
+            throw new ClassNotFoundException(
+                    "IOException was thrown when trying to get all resources for "
+                            + pckgname, ioex);
+        }
+
+        return classes;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        try {
-            reflexiveGetBenchmarkables();
-            addReflexiveBenchmarks();
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        addBenchmarks();
         addListeners();
         adjustSpeedofMathMethods();
         enableDarkTheme();
         initalizeGraph();
     }
 
-    private int compareBenchmarkItems(BenchmarkItem a, BenchmarkItem b) {
+    /**
+     * Reflects through the module to get all the packages, excluding com.sun. and javafx. packages
+     * Adds all @benchmark tagged methods to the tests.
+     */
+    private void addBenchmarks() {
+        try {
+            ArrayList<Class<?>> testClasses = new ArrayList<>();
+            for(String s : this.getClass().getModule().getPackages()){
+                if(!s.startsWith("javafx.") && !s.startsWith("com.sun.")) { //Ignores things we can't reflect
+                    System.out.println("Querying package " + s);
+                    try {
+                        testClasses.addAll(getClassesForPackage(s));
+                    } catch (Exception ignored) {
+
+                    }
+                }
+            }
+            for(Class c : testClasses) {
+                System.out.println("Querying class " + c.getName());
+                reflexiveGetBenchmarkables(c);
+            }
+            addReflexiveBenchmarks();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static int compareBenchmarkItems(BenchmarkItem a, BenchmarkItem b) {
         return a.getCategory().compareTo(b.getCategory());
     }
 
     private void addReflexiveBenchmarks() {
         List<BenchmarkItem> items = new ArrayList<>(customBenchmarks.values());
-        items.sort(this::compareBenchmarkItems);
+        items.sort(Controller::compareBenchmarkItems);
+        if(customBenchmarks.size() == 0) return;
         String curCat = items.get(0).getCategory();
         if (!curCat.isBlank()) {
             reflexiveButtonArea.getChildren().add(new Label(curCat));
@@ -158,14 +323,10 @@ public class Controller implements Initializable {
 
     }
 
-    private void reflexiveGetBenchmarkables() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        customBenchmarks = new HashMap<>();
-        /*Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .setUrls(ClasspathHelper.getUrlForClass(PolynomialBenchmark.class))
-                .setScanners(new MethodAnnotationsScanner()));
+    private void reflexiveGetBenchmarkables(Class<?> c) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        if(customBenchmarks == null) customBenchmarks = new HashMap<>();
 
-        Set<Method> methods = reflections.getMethodsAnnotatedWith(benchmark.class);*/
-        for (Method m : BenchmarkDefinitions.class.getMethods()) {        //TODO: generalize
+        for (Method m : c.getMethods()) {
             Annotation[] annotations = m.getAnnotations();
             if (annotations.length == 0) continue;
             for (Annotation a : annotations) {
