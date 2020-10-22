@@ -74,7 +74,7 @@ public class BenchmarkDefinitions {
 
     @benchmark(name = "sort", expectedEfficiency = "o(n^2)", category = "Math demos")
     public Long nSquared(Long size) {
-        return size * size * getSimulationSpeed();
+        return Math.round(Math.pow(size , 2) * getSimulationSpeed());
     }
 
     @benchmark(name = "fast sorting ", category = "Math demos", expectedEfficiency = "o(n log(n))", description = "This is the speed at which many optimal sorting algorithms run")

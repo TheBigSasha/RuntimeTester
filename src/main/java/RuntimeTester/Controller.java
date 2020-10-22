@@ -44,7 +44,8 @@ public class Controller implements Initializable {
     public Button buttom_darkMode;
     public VBox reflexiveButtonArea;
     public Label stepTimeDisplay;
-    int graphSpeed = 250;
+    private static final int originalRuntime = 250;
+    private int graphSpeed = 250;
     private ScheduledExecutorService scheduledExecutorService;
     private HashMap<String, BenchmarkItem> customBenchmarks;
     @FXML
@@ -257,6 +258,7 @@ public class Controller implements Initializable {
     }
 
     private void initalizeGraph() {
+        graphSpeed = originalRuntime;
         try {
             scheduledExecutorService.shutdownNow();
         } catch (NullPointerException e) {
@@ -268,8 +270,11 @@ public class Controller implements Initializable {
         // defining the axes
         xAxis.setLabel("Size of Dataset");
         xAxis.setAnimated(true);
+        //if(graphSpeed > 20) xAxis.setAnimated(true);
         yAxis.setLabel("Runtime (nanoseconds)");
         yAxis.setAnimated(false);
+        if(graphSpeed > 300) yAxis.setAnimated(true);
+
 
         // creating the line chart with two axis created above
         LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
@@ -311,6 +316,7 @@ public class Controller implements Initializable {
             }
 
             Platform.runLater(() -> {
+                if(graphSpeed > 300) yAxis.setAnimated(true);
                 for (Map.Entry<XYChart.Series<String, Number>, Long[]> entry : plotsRunTime.entrySet()) {
                     entry.getKey().getData().add(new XYChart.Data<String, Number>(Long.toString(entry.getValue()[1]), entry.getValue()[0]));
                     if (entry.getKey().getData().size() > 45 * (mainBorderView.getWidth() / 1000)) {
@@ -325,6 +331,8 @@ public class Controller implements Initializable {
                 }
             });
         }, 0, graphSpeed, TimeUnit.MILLISECONDS);
+
+        //TODO: loading icon when runtime is slow, notification or status at bottom to show what the period is.
 
     }
 
@@ -400,6 +408,10 @@ public class Controller implements Initializable {
                 System.out.println("[OVERFLOW] " + input + " took too long to run!");
                 return runtime * -1;
             } else {
+                if((runtime / 1000000) >= graphSpeed - 5){
+                    graphSpeed = Math.toIntExact(Math.round((runtime / 1000000.0) * 1.5));
+                }
+
                 return runtime;
             }
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
