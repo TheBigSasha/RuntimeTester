@@ -1,4 +1,5 @@
 # Java Library to plot the Time Complexity of methods!
+## Download the latest .jar from the "Releases"
 
 ## Library Installation
 Add the latest .jar from the releases as a library to your Java IDE:
@@ -75,6 +76,10 @@ The general practice is:
 ![](https://sashaphotoca.files.wordpress.com/2020/10/2020-10-19-12_19_36-runtime-efficiency-wizard-comp250.png)
 ![](https://sashaphotoca.files.wordpress.com/2020/10/2020-10-19-12_18_06-runtime-efficiency-wizard-comp250.png)
 ![](https://sashaphotoca.files.wordpress.com/2020/10/2020-10-19-12_07_26-runtime-efficiency-wizard-comp250.png)
+
+## Cloning as a Gradle project
+### IntelliJ IDEA
+Click on VCS -> get from version control -> paste the link for this repository -> run with Gradle
 
 ## Contributing, Contact, and Feedback
 Dev contact: alexander.aleshchenko@mail.mcgill.ca
