@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  */
 public class MainWindow extends Application {
     private static Controller c;
+    private static List<Class<?>> startupClasses = new ArrayList<>();
 
     /**
      * Start the application with arguments
@@ -32,6 +34,11 @@ public class MainWindow extends Application {
         launch();
     }
 
+    public static void launchGrapher(Class<?> extraTests){
+        startupClasses.add(extraTests);
+        launch();
+    }
+
     /**
      * Starts the JAVAFX appliation. DO NOT CALL THIS METHOD.
      * Use launchGrapher() or main() instead.
@@ -44,6 +51,7 @@ public class MainWindow extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainWindowDesign.fxml"));
         Parent root = fxmlLoader.load();
         c = (Controller) fxmlLoader.getController();
+        if(!startupClasses.isEmpty()) c.addBenchmarks(startupClasses);
         c.addBenchmarksFromPackageNames(Collections.singletonList("Tutorial7"));
         primaryStage.setTitle("Runtime Efficiency Wizard - COMP250");
         Scene s = new Scene(root);
