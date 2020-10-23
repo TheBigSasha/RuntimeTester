@@ -24,13 +24,13 @@
                     <Button fx:id="GC_Refresh" text="Refresh"/>
                     <Button fx:id="buttom_darkMode" text="Light theme"/>
                     <VBox>
-                        <Label alignment="CENTER" contentDisplay="CENTER" text="Steps per Iteration"
+                        <Label fx:id="GC_TurboFactorTitle" alignment="CENTER" contentDisplay="CENTER" text="Steps per Iteration"
                                textAlignment="CENTER"/>
                         <Slider fx:id="GC_TurboFactor" max="5000.0" min="1" value="1.0"/>
                     </VBox>
                     <VBox>
                         <HBox>
-                            <Label alignment="CENTER" contentDisplay="CENTER" text="Adjust Step Time    "
+                            <Label fx:id="GC_AdjustmentFactorTitle" alignment="CENTER" contentDisplay="CENTER" text="Adjust Step Time    "
                                    textAlignment="CENTER"/>
                             <Label fx:id="stepTimeDisplay" alignment="CENTER" contentDisplay="CENTER"
                                    textAlignment="CENTER"/>
@@ -39,7 +39,7 @@
                     </VBox>
                     <VBox>
                         <HBox>
-                            <Label alignment="CENTER" contentDisplay="CENTER" text="Simulation Speed    "
+                            <Label fx:id="GC_SimulationSpeedTitle" alignment="CENTER" contentDisplay="CENTER" text="Simulation Delay    "
                                    textAlignment="CENTER"/>
                         </HBox>
                         <Slider fx:id="GC_SimulationSpeed" max="1000" min="5" showTickLabels="true" value="250"/>

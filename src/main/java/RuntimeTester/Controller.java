@@ -46,6 +46,9 @@ public class Controller implements Initializable {
     public Label stepTimeDisplay;
     private static final int originalRuntime = 250;
     public Slider GC_SimulationSpeed;
+    public Label GC_SimulationSpeedTitle;
+    public Label GC_AdjustmentFactorTitle;
+    public Label GC_TurboFactorTitle;
     private int graphSpeed = 250;
     private ScheduledExecutorService scheduledExecutorService;
     private HashMap<String, BenchmarkItem> customBenchmarks;
@@ -410,6 +413,13 @@ public class Controller implements Initializable {
         GC_Refresh.setOnAction(e -> initalizeGraph());
         GC_Help.setOnAction(e -> openHelpPage());
         buttom_darkMode.setOnAction(e -> toggleDarkTheme());
+
+        GC_SimulationSpeed.setTooltip(new Tooltip("Adjust the delay between calculations. If this is too slow, the program will auto adjust to increase accordingly."));
+        GC_AdjustmentFactor.setTooltip(new Tooltip("Adjust the coefficient term for the theoretical methods."));
+        GC_TurboFactorTitle.setTooltip(new Tooltip("The amount of things added to the dataset at each step"));
+        GC_SimulationSpeedTitle.setTooltip(new Tooltip("Adjust the delay between calculations. If this is too slow, the program will auto adjust to increase accordingly."));
+        GC_AdjustmentFactorTitle.setTooltip(new Tooltip("Adjust the coefficient term for the theoretical methods."));
+
         GC_AdjustmentFactor.setOnMouseEntered(e -> adjustSpeedofMathMethods());
         GC_AdjustmentFactor.setOnMouseClicked(e -> adjustSpeedofMathMethods());
         GC_AdjustmentFactor.setOnTouchPressed(e -> adjustSpeedofMathMethods());
