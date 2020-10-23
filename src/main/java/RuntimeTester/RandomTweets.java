@@ -29,11 +29,12 @@ public class RandomTweets extends Random {
     private static final String namesURL = "https://raw.githubusercontent.com/TheBigSasha/COMP250_Final_Debugger/fb8c2f8b65e7d90a41f7320ed044d3772db79555/src/COMP250_A4_W2020/Put%20Your%20java%20files%20here.txt";
     private final File songLyrics = new File("src/COMP250_A4_W2020/songdata.csv");
     private static final String songDataURL = "https://raw.githubusercontent.com/TheBigSasha/COMP250_Final_Debugger/fb8c2f8b65e7d90a41f7320ed044d3772db79555/src/COMP250_A4_W2020/songdata.csv";
-    private final ArrayList<String> beeMovieScript = new ArrayList<>();
-    private final ArrayList<String> songLyric = new ArrayList<>();
-    private final ArrayList<String> pastUsers = new ArrayList<>();
     private static final String mostCommonWordsURL = "https://raw.githubusercontent.com/first20hours/google-10000-english/master/20k.txt";
     private static final String beeMovieURL = "https://web.njit.edu/~cm395/theBeeMovieScript/";
+    private final ArrayList<String> pastUsers = new ArrayList<>();
+    private static BufferedReader beeMovieBR;
+    private static BufferedReader mostCommonWordsBR;
+    private static BufferedReader songDataBR;
     //Parameters
     private static final int songFactor = 3;
     private static final int SEARCH_RECURSION_LIMIT = 2200;
@@ -194,20 +195,7 @@ public class RandomTweets extends Random {
         InputStream is = con.getInputStream();
 
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-        String line = null;
-        while ((line = br.readLine()) != null) {
-            if (line.endsWith(";") || line.strip().startsWith("#") || line.startsWith("<") || line.startsWith("/") || line.startsWith(".") || line.startsWith("{") || line.startsWith("}") || line.isBlank()) {
-
-            } else {
-                if (line.startsWith("- ")) {
-                    line = line.replace("- ", "");
-                }
-                beeMovieScript.add(line);
-                //System.out.println(line);
-            }
-        }
+        beeMovieBR = new BufferedReader(new InputStreamReader(is));
     }
 
     private void initializeCommonWords() throws IOException {
@@ -235,20 +223,6 @@ public class RandomTweets extends Random {
     }
 
     private void initializeSongLyrics() throws IOException {
-        try {
-            Scanner scanner = new Scanner(songLyrics);
-            scanner.useDelimiter(",");
-            int counter = 0;
-            while (scanner.hasNext()) {
-                String cur = scanner.next();
-                if (counter % 3 == 0 && !cur.isBlank() && !cur.startsWith("/")) {
-                    //System.out.println("adding a lyric to the lyrics list");
-
-                    songLyric.addAll(Arrays.asList(cur.replaceAll("Chorus: ", "").replaceAll("\n\n", "").replaceAll("\"", "").split("\n")));
-                }
-                counter++;
-            }
-        } catch (FileNotFoundException e) {
             //System.out.println("Song Lyrics file not found");
             // Make a URL to the web page
             URL songs = new URL(songDataURL);
@@ -256,20 +230,7 @@ public class RandomTweets extends Random {
             URLConnection con = songs.openConnection();
             InputStream is = con.getInputStream();
 
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-            String line = null;
-            int counter = 0;
-            while ((line = br.readLine()) != null) {
-                if (counter % songFactor == 0 && !line.isBlank() && !line.startsWith("/")) {
-                    //System.out.println("adding a lyric to the lyrics list");
-
-                    songLyric.addAll(Arrays.asList(line.replaceAll("Chorus: ", "").replaceAll("\n\n", "").replaceAll("\"", "").split("\n")));
-                }
-                counter++;
-            }
-        }
+            songDataBR = new BufferedReader(new InputStreamReader(is));
     }
 
     private int nextRandInt(int i) {
@@ -352,9 +313,21 @@ public class RandomTweets extends Random {
     public String nextContent() {
         boolean choice = nextBoolean();
         if (choice = true) {
-            return nextBeeMovieLine();
+            try {
+                return nextBeeMovieLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return e.getMessage();
+
+            }
         } else {
-            return nextSongLyric();
+            try {
+                return nextSongLyric();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return e.getMessage();
+
+            }
         }
     }
 
@@ -365,7 +338,11 @@ public class RandomTweets extends Random {
      * @return a song lyric, bee movie quote, or random string which at's the specified name
      */
     public String nextContent(String toAt) {
-        return nextSongLyric(toAt);
+        try {
+            return nextSongLyric(toAt);
+        } catch (IOException e) {
+            return  e.getMessage();
+        }
     }
 
     /**
@@ -384,19 +361,20 @@ public class RandomTweets extends Random {
      *
      * @return a song lyric with the specified keyword.
      */
-    public String nextSongLyric() {
-        try {
-            int toGet = nextBound(songLyric.size());
-            String lyric = songLyric.get(toGet);
-            if (lyric.isEmpty() || lyric.isBlank() || lyric.length() < 10) {
-                return nextSongLyric();
-            } else {
-                return lyric;
+    public String nextSongLyric() throws IOException {
+        if(songDataBR == null) initializeSongLyrics();
+        String line = songDataBR.readLine();
+        if(line == null) initializeSongLyrics();
+        if (line.endsWith(";") || line.strip().startsWith("#") || line.startsWith("<") || line.startsWith("/") || line.startsWith(".") || line.startsWith("{") || line.startsWith("}") || line.isBlank()) {
+            line = songDataBR.readLine();
+        } else {
+            if (line.startsWith("- ")) {
+                line = line.replace("- ", "");
             }
-        } catch (Exception e) {
-            //return "ERROR! : size of databse of Lyrics is " + songLyric.size();
-            return nextBeeMovieLine();
+            return line;
+            //System.out.println(line);
         }
+        return nextDateString();
     }
 
     /**
@@ -405,10 +383,12 @@ public class RandomTweets extends Random {
      * @param toAt someone to at
      * @return a song lyric with the specified at.
      */
-    public String nextSongLyric(String toAt) {
+    public String nextSongLyric(String toAt) throws IOException {
+        if(songDataBR == null) initializeSongLyrics();
+        String line = songDataBR.readLine();
+        if(line == null) initializeSongLyrics();
         try {
-            int toGet = nextBound(songLyric.size());
-            String lyric = songLyric.get(toGet);
+            String lyric = songDataBR.readLine();
             if (lyric.isEmpty() || lyric.isBlank() || lyric.length() < 10 || !lyric.contains("you ")) {
                 return nextSongLyric(toAt);
             } else {
@@ -418,6 +398,7 @@ public class RandomTweets extends Random {
             //return "ERROR! : size of databse of Lyrics is " + songLyric.size();
             return nextBeeMovieLine();
         }
+
     }
 
     /**
@@ -426,19 +407,22 @@ public class RandomTweets extends Random {
      * @param keyWord a word which the specified lyric must contain
      * @return a song lyric with the specified keyword.
      */
-    public String nextSongLyricWithKeyword(String keyWord) {
+    public String nextSongLyricWithKeyword(String keyWord) throws IOException {
+        if(songDataBR == null) initializeSongLyrics();
+        String line = songDataBR.readLine();
+        if(line == null) initializeSongLyrics();
         try {
-            int toGet = nextBound(songLyric.size());
-            String lyric = songLyric.get(toGet);
-            if (lyric.isEmpty() || lyric.isBlank() || lyric.length() < 10 || !lyric.toLowerCase().contains(keyWord)) {
-                return nextSongLyricWithKeyword(keyWord, 1);
+            String lyric = songDataBR.readLine();
+            if (lyric.isEmpty() || lyric.isBlank() || lyric.length() < 10 || !lyric.contains(keyWord)) {
+                return nextSongLyric(keyWord);
             } else {
-                return lyric;
+                return lyric.toLowerCase().replaceFirst("you ", "@" + keyWord + " ");
             }
         } catch (Exception e) {
-            //System.out.println("[RandomTweets / Lyric Keyword Finder] Failed to find the right lyric, so I added the word to a line from the bee movie.");
-            return nextBeeMovieLine() + " " + keyWord;
+            //return "ERROR! : size of databse of Lyrics is " + songLyric.size();
+            return nextBeeMovieLine();
         }
+
     }
 
     /**
@@ -461,7 +445,12 @@ public class RandomTweets extends Random {
         } catch (Exception e) {
             //return "ERROR! : size of databse of Lyrics is " + songLyric.size();
             //System.out.println("[RandomTweets / At&Keyword Generator] Failed to find good line for keyword " + keyWord + " which is atable.");
-            return nextSongLyricWithKeyword(keyWord) + " @" + toAt;
+            try {
+                return nextSongLyricWithKeyword(keyWord) + " @" + toAt;
+            } catch (IOException ioException) {
+                return  ioException.getMessage();
+
+            }
         }
     }
 
@@ -472,27 +461,22 @@ public class RandomTweets extends Random {
      * @param numRecursions how many times this method has been recursed
      * @return a song lyric with the specified keyword.
      */
-    private String nextSongLyricWithKeyword(String keyWord, int numRecursions) {
+    private String nextSongLyricWithKeyword(String keyWord, int numRecursions) throws IOException {
+        numRecursions++;
+        if(numRecursions >= SEARCH_RECURSION_LIMIT) return nextBeeMovieLine();
+        if(songDataBR == null) initializeSongLyrics();
+        String line = songDataBR.readLine();
+        if(line == null) initializeSongLyrics();
         try {
-            int toGet = nextBound(songLyric.size());
-            String lyric = songLyric.get(toGet);
-            String regex = "\\b" + keyWord.toLowerCase() + "\\b";
-            Pattern pattern = Pattern.compile(regex.toLowerCase());
-            Matcher matcher = pattern.matcher(lyric.toLowerCase());
-            if (lyric.isEmpty() || lyric.isBlank() || lyric.length() < 10 || !matcher.find()) {
-                if (numRecursions <= songLyric.size() - 1 && numRecursions <= SEARCH_RECURSION_LIMIT) {
-                    return nextSongLyricWithKeyword(keyWord, numRecursions + 1);
-                } else {
-                    //System.out.println("[RandomTweets / Lyric Keyword Finder] Failed to find the right lyric, so I added the word to a line from the bee movie.");
-                    return nextBeeMovieLine() + " " + keyWord;
-                }
+            String lyric = songDataBR.readLine();
+            if (lyric.isEmpty() || lyric.isBlank() || lyric.length() < 10 || !lyric.contains(keyWord)) {
+                return nextSongLyricWithKeyword(keyWord, numRecursions);
             } else {
-                return lyric;
+                return lyric.toLowerCase().replaceFirst("you ", "@" + keyWord + " ");
             }
         } catch (Exception e) {
             //return "ERROR! : size of databse of Lyrics is " + songLyric.size();
-            //System.out.println("[RandomTweets / Lyric Keyword Finder] Failed to find the right lyric, so I added the word to a line from the bee movie.");
-            return nextBeeMovieLine() + " " + keyWord;
+            return nextBeeMovieLine();
         }
     }
 
@@ -501,14 +485,20 @@ public class RandomTweets extends Random {
      *
      * @return a line from the Bee Movie.
      */
-    public String nextBeeMovieLine() {   //TODO: bee movie iterator
-        try {
-            int toGet = nextBound(beeMovieScript.size());
-            return beeMovieScript.get(toGet);
-        } catch (Exception e) {
-            //return "ERROR! : size of databse of Bee Movie is " + beeMovieScript.size();
-            return nextName();
+    public String nextBeeMovieLine() throws IOException {   //TODO: bee movie iterator
+        if(beeMovieBR == null) initializeSongLyrics();
+        String line = beeMovieBR.readLine();
+        if(line == null) initializeSongLyrics();
+        if (line.endsWith(";") || line.strip().startsWith("#") || line.startsWith("<") || line.startsWith("/") || line.startsWith(".") || line.startsWith("{") || line.startsWith("}") || line.isBlank()) {
+            line = beeMovieBR.readLine();
+        } else {
+            if (line.startsWith("- ")) {
+                line = line.replace("- ", "");
+            }
+            return line;
+            //System.out.println(line);
         }
+        return nextDateString();
     }
 
     /**
@@ -644,7 +634,11 @@ public class RandomTweets extends Random {
      * @return a String, probably a song lyric, with the keyword
      */
     public String nextKeywordContent(String keyword) {
-        return nextSongLyricWithKeyword(keyword);
+        try {
+            return nextSongLyricWithKeyword(keyword);
+        } catch (IOException e) {
+            return e.getMessage();
+        }
     }
 
 /*
@@ -707,7 +701,11 @@ public class RandomTweets extends Random {
             } else {
                 output.addAll(names);
                 for (int i = output.size(); i < length; i++) {
-                    output.add(nextBeeMovieLine().split(" ")[0]);
+                    try {
+                        output.add(nextBeeMovieLine().split(" ")[0]);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             return output;
@@ -726,7 +724,11 @@ public class RandomTweets extends Random {
         StringBuilder output = new StringBuilder();
         int max = 10 + this.nextInt(25);
         for (int i = 0; i < max; i++) {
-            output.append(this.nextSongLyricWithKeyword(keyword)).append("\n");
+            try {
+                output.append(this.nextSongLyricWithKeyword(keyword)).append("\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return output.toString();
     }
@@ -735,7 +737,11 @@ public class RandomTweets extends Random {
         StringBuilder output = new StringBuilder();
         int max = 10 + this.nextInt(25);
         for (int i = 0; i < max; i++) {
-            output.append(this.nextSongLyric()).append("\n");
+            try {
+                output.append(this.nextSongLyric()).append("\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return output.toString();
     }
