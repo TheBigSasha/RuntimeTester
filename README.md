@@ -6,10 +6,10 @@ This release is Windows specific for now, a Mac and Linux version will be compil
 Add the latest .jar from the releases as a library to your Java IDE:
 
 ### IntelliJ IDEA
-Click on: File -> Project Structure -> Project Settings -> Libraries -> + -> Java -> (navigate to and select RuntimeTester.jar)
+Click on: ```File -> Project Structure -> Project Settings -> Libraries -> + -> Java -> (navigate to and select RuntimeTester.jar)```
 
 ### Eclipse
-Right click on your project -> Build Path -> Libraries -> Classpath -> Add External JARs... -> (navigate to and select RuntimeTester.jar)
+```Right click on your project -> Build Path -> Libraries -> Classpath -> Add External JARs... -> (navigate to and select RuntimeTester.jar)```
 
 ## 💻 Usage
 ### 🚀 Launching the GUI
