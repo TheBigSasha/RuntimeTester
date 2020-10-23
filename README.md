@@ -1,6 +1,6 @@
 # Java Library to plot the Time Complexity of methods!
 ### Download the latest .jar from the "Releases"
-This release is Windows specific for now, a Mac version will be compiled and added in a release soon.
+This release is Windows specific for now, a Mac and Linux version will be compiled and added in a release soon.
 
 ## 📚 Library Installation
 Add the latest .jar from the releases as a library to your Java IDE:
