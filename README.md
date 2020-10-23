@@ -24,8 +24,8 @@ public class MyClass{
 ### 🧠 Adding your own method
 To add your own test methods, use the @benchmark() annotation, as below:
 ```java
-@benchmark(name = "hello world")    //The @benchmark annotation has a required property "name", all others are optional
-public static long testMethod(long input){
+@benchmark(name = "hello world")                      //The @benchmark annotation has a required property "name", all others are optional
+public static long testMethod(long input){            //All benchmark methods must be public, take long, return long
     //My-code-here
 }
 ```
@@ -38,8 +38,8 @@ public static long testMethod(long input){
  Here is a sample method which plots the curve of n^2
  ```java
     @benchmark(name = "sort", expectedEfficiency = "o(n^2)", category = "Math demos", theoretical = true)
-    public long nSquared(long size) {
-        return Math.round(Math.pow(size , 2));
+    public static long nSquared(long size) {                 //There is no restriction on method name
+        return Math.round(Math.pow(size , 2));        //The x axis plots size and the y axis plots what is returned
     }
  ```
 
