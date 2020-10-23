@@ -1,5 +1,5 @@
 # Java Library to plot the Time Complexity of methods!
-## Download the latest .jar from the "Releases"
+### Download the latest .jar from the "Releases"
 
 ## Library Installation
 Add the latest .jar from the releases as a library to your Java IDE:
