@@ -12,6 +12,8 @@ Click on: ```File -> Project Structure -> Project Settings -> Libraries -> + -> 
 Right click on your project ``` -> Build Path -> Libraries -> Classpath -> Add External JARs... -> (navigate to and select RuntimeTester.jar)```
 
 ## 💻 Usage
+For a complete example, see the [sample project](https://github.com/TheBigSasha/RuntimeTester_DemoProject)
+
 ### 🚀 Launching the GUI
 To launch the GUI with the default demos,
 ```java
