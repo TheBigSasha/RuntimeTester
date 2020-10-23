@@ -208,9 +208,7 @@ public class Controller implements Initializable {
      */
     public void addBenchmarks(List<Class<?>> testClasses) {
         try {
-            testClasses.addAll(getClassesForPackage("Tutorial7"));
-            testClasses.addAll(getClassesForPackage("a2"));
-            for(String s : this.getClass().getModule().getPackages()){      //TODO: It does not successfully query the Tutorial7 package?
+            for(String s : this.getClass().getModule().getPackages()){
                 //System.out.println("package named " + s + " was found in module");
                 if(!s.startsWith("javafx.") && !s.startsWith("com.sun.")) { //Ignores things we can't reflect
                     System.out.println("Querying package " + s);
@@ -228,7 +226,7 @@ public class Controller implements Initializable {
                 reflexiveGetBenchmarkables(c);
             }
             addReflexiveBenchmarks();
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
@@ -238,31 +236,13 @@ public class Controller implements Initializable {
      * Adds all @benchmark tagged methods to the tests.
      */
     private void addBenchmarks() {
-        try {
-            ArrayList<Class<?>> testClasses = new ArrayList<>();
-            testClasses.addAll(getClassesForPackage("Tutorial7"));
-            testClasses.addAll(getClassesForPackage("a2"));
-            for(String s : this.getClass().getModule().getPackages()){      //TODO: It does not successfully query the Tutorial7 package?
-                //System.out.println("package named " + s + " was found in module");
-                if(!s.startsWith("javafx.") && !s.startsWith("com.sun.")) { //Ignores things we can't reflect
-                    System.out.println("Querying package " + s);
-                    try {
-                        testClasses.addAll(getClassesForPackage(s));
-                    } catch (Exception ignored) {
 
-                    }
-                }
-            }
-
-
-            for(Class c : testClasses) {
-                System.out.println("Querying class " + c.getName());
-                reflexiveGetBenchmarkables(c);
-            }
-            addReflexiveBenchmarks();
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
+        ArrayList<Class<?>> testClasses = new ArrayList<>();
+        try { testClasses.addAll(getClassesForPackage("Tutorial7")); } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }
+        }try { testClasses.addAll(getClassesForPackage("a2")); } catch (ClassNotFoundException e) {
+            e.printStackTrace(); }
+        addBenchmarks(testClasses);
     }
 
     private static int compareBenchmarkItems(BenchmarkItem a, BenchmarkItem b) {
