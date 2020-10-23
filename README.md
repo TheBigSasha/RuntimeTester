@@ -24,7 +24,7 @@ public class MyClass{
 ### 🧠 Adding your own method
 To add your own test methods, use the @benchmark() annotation, as below:
 ```java
-@benchmark(name = "hello world)
+@benchmark(name = "hello world")    //The @benchmark annotation has a required property "name", all others are optional
 public static long testMethod(long input){
     //My-code-here
 }
