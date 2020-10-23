@@ -52,7 +52,7 @@ public class MainWindow extends Application {
         Parent root = fxmlLoader.load();
         c = (Controller) fxmlLoader.getController();
         if(!startupClasses.isEmpty()) c.addBenchmarks(startupClasses);
-        c.addBenchmarksFromPackageNames(Collections.singletonList("Tutorial7"));
+        //c.addBenchmarksFromPackageNames(Collections.singletonList("Tutorial7"));
         primaryStage.setTitle("Runtime Efficiency Wizard - COMP250");
         Scene s = new Scene(root);
         primaryStage.setScene(s);
