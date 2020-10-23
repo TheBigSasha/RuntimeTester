@@ -1,7 +1,7 @@
 # Java Library to plot the Time Complexity of methods!
 ### Download the latest .jar from the "Releases"
 
-## Library Installation
+## 📚 Library Installation
 Add the latest .jar from the releases as a library to your Java IDE:
 
 ### IntelliJ IDEA
@@ -10,8 +10,8 @@ Click on: File -> Project Structure -> Project Settings -> Libraries -> + -> Jav
 ### Eclipse
 Right click on your project -> Build Path -> Libraries -> Classpath -> Add External JARs... -> (navigate to and select RuntimeTester.jar)
 
-## Usage
-### Launching the GUI
+## 💻 Usage
+### 🚀 Launching the GUI
 To launch the GUI with the default demos,
 ```java
 import RuntimeTester.*
@@ -21,7 +21,7 @@ public class MyClass{
   }
 }
 ```
-### Adding your own method
+### 🧠 Adding your own method
 To add your own test methods, use the @benchmark() annotation, as below:
 ```java
 @benchmark(name = "hello world)
@@ -43,7 +43,7 @@ public static long testMethod(long input){
     }
  ```
 
-### Benchmarking real methods
+### 🏎️ Benchmarking real methods
 Use the long parameter to indicate the number of items in your data structure
 
 Here is a demo testing Java's built in sorting algorithm
@@ -71,17 +71,17 @@ The general practice is:
   store an endTime with System.nanoTime();
   return endTime - startTime_
 
-## Screenshots and Expected Behaviour
+## 📷 Screenshots and Expected Behaviour
 
 ![](https://sashaphotoca.files.wordpress.com/2020/10/2020-10-19-12_19_36-runtime-efficiency-wizard-comp250.png)
 ![](https://sashaphotoca.files.wordpress.com/2020/10/2020-10-19-12_18_06-runtime-efficiency-wizard-comp250.png)
 ![](https://sashaphotoca.files.wordpress.com/2020/10/2020-10-19-12_07_26-runtime-efficiency-wizard-comp250.png)
 
-## Cloning as a Gradle project
+## 📁 Cloning as a Gradle project
 ### IntelliJ IDEA
 Click on VCS -> get from version control -> paste the link for this repository -> run with Gradle
 
-## Contributing, Contact, and Feedback
+## 💖 Contributing, Contact, and Feedback
 Dev contact: alexander.aleshchenko@mail.mcgill.ca
 Website: sashaphoto.ca
 Contributing: read contributing.md
