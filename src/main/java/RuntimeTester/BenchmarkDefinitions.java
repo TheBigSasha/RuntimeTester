@@ -1,11 +1,13 @@
 package RuntimeTester;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class BenchmarkDefinitions {
+    private static Random rand;
     private static int speed = 0;
-    private static RandomTweets rand;
     private static final int seed = 24601;
 
     public static double getAdjustmentFactor() {
@@ -48,17 +50,71 @@ public class BenchmarkDefinitions {
     }
 
     public BenchmarkDefinitions() {
-        if (rand == null) {
-            rand = new RandomTweets(seed);
-        }
+        rand = new Random(seed);
         determineSpeed();
+    }
+
+    /**
+     * Generates a date matching the format in the teacher supplied debugger
+     *
+     * @return a date
+     */
+    private static String nextDateString() {
+        int year = 2009 + rand.nextInt(11);
+        int month = 1 + rand.nextInt(11);
+        int day = 1 + rand.nextInt(27);
+        int hour = rand.nextInt(23);
+        int minute = rand.nextInt(59);
+        int second = rand.nextInt(59);
+        StringBuilder sb = new StringBuilder();
+        sb.append(year);
+        sb.append("-");
+        if (month < 10) {
+            sb.append("0" + month);
+        } else {
+            sb.append(month);
+        }
+        sb.append("-");
+        if (day < 10) {
+            sb.append("0" + day);
+        } else {
+            sb.append(day);
+        }
+        sb.append(" ");
+        if (hour < 10) {
+            sb.append("0" + hour);
+        } else {
+            sb.append(hour);
+        }
+        sb.append(":");
+        if (minute < 10) {
+            sb.append("0" + minute);
+        } else {
+            sb.append(minute);
+        }
+        sb.append(":");
+        if (second < 10) {
+            sb.append("0" + second);
+        } else {
+            sb.append(second);
+        }
+        return sb.toString();
+    }
+
+    private static Date nextDate(){
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(nextDateString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @benchmark(name = "ArrayList.sort", expectedEfficiency = "O(n log(n))", category = "Java Builtin")
     public static long arraysSort(long size) {
         ArrayList<Date> dataset = new ArrayList<>();
         for (long i = 0; i < size; i++) {
-            dataset.add(rand.nextDate());
+            dataset.add(nextDate());
         }
         long startTime = System.nanoTime();
         dataset.sort(Date::compareTo);
@@ -101,7 +157,7 @@ public class BenchmarkDefinitions {
     public long enqueueTest(long size) {
         Queue<Date> dataset = new ConcurrentLinkedQueue<>();
         for (long i = 0; i < size; i++) {
-            dataset.add(rand.nextDate());
+            dataset.add(nextDate());
         }
         long startTime = System.nanoTime();
         dataset.poll();
@@ -113,7 +169,7 @@ public class BenchmarkDefinitions {
     public long getFromMiddleOfQueue(long size){
         Queue<Date> dataset = new ConcurrentLinkedQueue<>();
         for(long i = 0; i < size; i++){
-            dataset.add(rand.nextDate());
+            dataset.add(nextDate());
         }
         long startTime = System.nanoTime();
         for(int i = 0; i < size/2 ; i++){
