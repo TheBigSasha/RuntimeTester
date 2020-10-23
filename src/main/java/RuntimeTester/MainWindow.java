@@ -6,24 +6,45 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class MainWindow extends Application {
+import java.util.Collections;
+import java.util.List;
 
+/**
+ * The frontend and API for the Runtime Efficiency Tester
+ * @author Sasha Aleshchenko - alexander.aleshchenko@mail.mcgill.ca
+ * Documentation available at RuntimeTester.github.io
+ */
+public class MainWindow extends Application {
+    private static Controller c;
+
+    /**
+     * Start the application with arguments
+     * @param args args
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * Start up the GUI.
+     */
     public static void launchGrapher(){
         launch();
     }
 
-    //TODO: launch upon instantiation of object with tested .class as parameter
-    //TODO: singleton class controller, can be started by call to its build method, takes class or collection<class> as input.
-    //Includes adder method for more tester classes
-    //Finalizes with a show method to display the window! <inner class for Application?>
-    //This can be packaged as jar and distributed
+    /**
+     * Starts the JAVAFX appliation. DO NOT CALL THIS METHOD.
+     * Use launchGrapher() or main() instead.
+     *
+     * @param primaryStage
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("MainWindowDesign.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainWindowDesign.fxml"));
+        Parent root = fxmlLoader.load();
+        c = (Controller) fxmlLoader.getController();
+        c.addBenchmarksFromPackageNames(Collections.singletonList("Tutorial7"));
         primaryStage.setTitle("Runtime Efficiency Wizard - COMP250");
         Scene s = new Scene(root);
         primaryStage.setScene(s);
@@ -33,8 +54,23 @@ public class MainWindow extends Application {
         primaryStage.show();
     }
 
-    private void exitProgram() {
+    /**
+     * Exits the application
+     */
+    private static void exitProgram() {
         System.exit(0);
+    }
+
+    /**
+     * This method is used to add benchmark classes to the tester.
+     * Any classes passed to this method will be checked by the controller
+     * for methods annotated with @benchmark and those methods will be added
+     * to the program.
+     *
+     * @param benchmarkClasses list of classes to be added
+     */
+    public static void addBenchmarks(List<Class<?>> benchmarkClasses){
+        c.addBenchmarks(benchmarkClasses);
     }
 
 }

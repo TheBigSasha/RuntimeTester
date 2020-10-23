@@ -202,6 +202,30 @@ public class Controller implements Initializable {
         initalizeGraph();
     }
 
+    public void addBenchmarksFromPackageNames(List<String> pkgNames){
+        ArrayList testClasses = new ArrayList();
+        for(String s : pkgNames){
+            try {
+                testClasses.addAll(getClassesForPackage(s));
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        addBenchmarks(testClasses);
+    }
+
+    public void addBenchmarksFromPackages(List<Package> packages){
+        ArrayList testClasses = new ArrayList();
+        for(Package p : packages){
+            try {
+                testClasses.addAll(getClassesForPackage(p.getName()));
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        addBenchmarks(testClasses);
+    }
+
     /**
      * Reflects through the module to get all the packages, excluding com.sun. and javafx. packages
      * Adds all @benchmark tagged methods to the tests.
@@ -238,9 +262,7 @@ public class Controller implements Initializable {
     private void addBenchmarks() {
 
         ArrayList<Class<?>> testClasses = new ArrayList<>();
-        try { testClasses.addAll(getClassesForPackage("Tutorial7")); } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }try { testClasses.addAll(getClassesForPackage("a2")); } catch (ClassNotFoundException e) {
+        try{ testClasses.addAll(getClassesForPackage("a2")); } catch (ClassNotFoundException e) {
             e.printStackTrace(); }
         addBenchmarks(testClasses);
     }
@@ -253,16 +275,19 @@ public class Controller implements Initializable {
 
     private void addReflexiveBenchmarks() {
         List<BenchmarkItem> items = new ArrayList<>(customBenchmarks.values());
+        reflexiveButtonArea.getChildren().clear();
         items.sort(Controller::compareBenchmarkItems);
         if(customBenchmarks.size() == 0) return;
         String curCat = items.get(0).getCategory();
         if (!curCat.isBlank()) {
-            reflexiveButtonArea.getChildren().add(new Label(curCat));
+            Label l = new Label(curCat);
+            reflexiveButtonArea.getChildren().add(l);
         }
         for (BenchmarkItem item : items) {
             if (!item.getCategory().equals(curCat)) {
                 curCat = item.getCategory();
-                reflexiveButtonArea.getChildren().add(new Label(curCat));
+                Label l = new Label(curCat);
+              reflexiveButtonArea.getChildren().add(l);
             }
             reflexiveButtonArea.getChildren().add(item.getCheckbox());
         }
@@ -357,7 +382,7 @@ public class Controller implements Initializable {
                 if (a instanceof benchmark) {
                     benchmark bm = (benchmark) a;
                     BenchmarkItem item = new BenchmarkItem(m, bm);
-                    customBenchmarks.put(item.getCheckbox().getText(), item);
+                    if(!customBenchmarks.containsValue(item)) customBenchmarks.put(item.getCheckbox().getText(), item);
                 }
             }
         }
