@@ -37,6 +37,13 @@
                         </HBox>
                         <Slider fx:id="GC_AdjustmentFactor" max="2.0" min="0.01" showTickLabels="true" value="0.1"/>
                     </VBox>
+                    <VBox>
+                        <HBox>
+                            <Label alignment="CENTER" contentDisplay="CENTER" text="Simulation Speed    "
+                                   textAlignment="CENTER"/>
+                        </HBox>
+                        <Slider fx:id="GC_SimulationSpeed" max="1000" min="5" showTickLabels="true" value="250"/>
+                    </VBox>
                 </HBox>
             </children>
         </HBox>

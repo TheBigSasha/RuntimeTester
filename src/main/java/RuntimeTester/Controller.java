@@ -45,6 +45,7 @@ public class Controller implements Initializable {
     public VBox reflexiveButtonArea;
     public Label stepTimeDisplay;
     private static final int originalRuntime = 250;
+    public Slider GC_SimulationSpeed;
     private int graphSpeed = 250;
     private ScheduledExecutorService scheduledExecutorService;
     private HashMap<String, BenchmarkItem> customBenchmarks;
@@ -294,13 +295,19 @@ public class Controller implements Initializable {
     }
 
     private void initalizeGraph() {
-        graphSpeed = originalRuntime;
+
         try {
             scheduledExecutorService.shutdownNow();
         } catch (NullPointerException e) {
         }
         NumberAxis yAxis = new NumberAxis();
         CategoryAxis xAxis = new CategoryAxis();
+        if(graphSpeed > 1000) graphSpeed = originalRuntime;
+        GC_SimulationSpeed.setMouseTransparent(false);
+        GC_SimulationSpeed.setOpacity(1);
+        GC_SimulationSpeed.setMax(1000);
+        graphSpeed = (int) GC_SimulationSpeed.getValue();
+
 
 
         // defining the axes
@@ -336,37 +343,45 @@ public class Controller implements Initializable {
         scheduledExecutorService = Executors.newScheduledThreadPool(lineChart.getData().size() + 1);
 
         AtomicLong counter = new AtomicLong();
-        scheduledExecutorService.scheduleAtFixedRate(() -> {
-            counter.get();
-            if (GC_TurboMode) {
-                //System.out.println("turbo is on");
-                double amount = 1.0;
-                amount *= GC_TurboFactor.getValue();
-                long count = Math.round(amount);
-                counter.addAndGet(count);
-            } else {
-                counter.getAndIncrement();
-            }
-            for (Map.Entry<XYChart.Series<String, Number>, Long[]> entry : plotsRunTime.entrySet()) {
-                entry.setValue(new Long[]{ComputeRuntime(entry.getKey().getName(), counter.get()), counter.get()});
-            }
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                {
 
-            Platform.runLater(() -> {
-                if(graphSpeed > 300) yAxis.setAnimated(true);
-                for (Map.Entry<XYChart.Series<String, Number>, Long[]> entry : plotsRunTime.entrySet()) {
-                    entry.getKey().getData().add(new XYChart.Data<String, Number>(Long.toString(entry.getValue()[1]), entry.getValue()[0]));
-                    if (entry.getKey().getData().size() > 45 * (mainBorderView.getWidth() / 1000)) {
-                        lineChart.setVerticalGridLinesVisible(false);
-                        lineChart.setHorizontalGridLinesVisible(false);
-                        lineChart.setCreateSymbols(false);
+                    counter.get();
+                    if (GC_TurboMode) {
+                        double amount = 1.0;
+                        amount *= GC_TurboFactor.getValue();
+                        long count = Math.round(amount);
+                        counter.addAndGet(count);
                     } else {
-                        lineChart.setVerticalGridLinesVisible(true);
-                        lineChart.setHorizontalGridLinesVisible(true);
-                        lineChart.setCreateSymbols(true);
+                        counter.getAndIncrement();
                     }
+                    for (Map.Entry<XYChart.Series<String, Number>, Long[]> entry : plotsRunTime.entrySet()) {
+                        entry.setValue(new Long[]{ComputeRuntime(entry.getKey().getName(), counter.get()), counter.get()});
+                    }
+                    scheduledExecutorService.schedule(this,graphSpeed,TimeUnit.MILLISECONDS);
+
+                    Platform.runLater(() -> {
+                        graphSpeed = (int) GC_SimulationSpeed.getValue();
+                        if(graphSpeed > 300) yAxis.setAnimated(true);
+                        for (Map.Entry<XYChart.Series<String, Number>, Long[]> entry : plotsRunTime.entrySet()) {
+                            entry.getKey().getData().add(new XYChart.Data<String, Number>(Long.toString(entry.getValue()[1]), entry.getValue()[0]));
+                            if (entry.getKey().getData().size() > 45 * (mainBorderView.getWidth() / 1000)) {
+                                lineChart.setVerticalGridLinesVisible(false);
+                                lineChart.setHorizontalGridLinesVisible(false);
+                                lineChart.setCreateSymbols(false);
+                            } else {
+                                lineChart.setVerticalGridLinesVisible(true);
+                                lineChart.setHorizontalGridLinesVisible(true);
+                                lineChart.setCreateSymbols(true);
+                            }
+                        }
+                    });
                 }
-            });
-        }, 0, graphSpeed, TimeUnit.MILLISECONDS);
+            }
+        };
+        scheduledExecutorService.schedule(r,graphSpeed,TimeUnit.MILLISECONDS);
 
         //TODO: loading icon when runtime is slow, notification or status at bottom to show what the period is.
 
@@ -434,18 +449,24 @@ public class Controller implements Initializable {
         }
         initalizeGraph();
     }
-
     private long ComputeRuntime(String input, Long count) {
-        //System.out.println("Computing runtime of " + input + " at count " + count);
 
         try {
             long runtime = customBenchmarks.get(input).run(count);
             if (runtime < 0) {
-                System.out.println("[OVERFLOW] " + input + " took too long to run!");
                 return runtime * -1;
             } else {
-                if((runtime / 1000000) >= graphSpeed - 5){
-                    graphSpeed = Math.toIntExact(Math.round((runtime / 1000000.0) * 1.5));
+                if((runtime / 100000) >= graphSpeed && !customBenchmarks.get(input).isTheoretical()){
+                    if((runtime / 100000) >= (GC_SimulationSpeed.getMax() / 1.5)) {
+                        graphSpeed = Math.toIntExact(Math.round((runtime / 100000.0) * 1.5));
+                        GC_SimulationSpeed.setMouseTransparent(true);
+                        GC_SimulationSpeed.setOpacity(0.5);
+                        GC_SimulationSpeed.setMax(graphSpeed);
+                        GC_SimulationSpeed.setValue(graphSpeed);
+                    }else{  //TODO: Account for spikes.
+                        graphSpeed = Math.toIntExact(Math.round((runtime / 100000.0) * 1.5));
+                        GC_SimulationSpeed.setValue(graphSpeed);
+                    }
                 }
 
                 return runtime;
@@ -473,6 +494,12 @@ public class Controller implements Initializable {
     private class BenchmarkItem {
         private final String category;
         private final Method invokable;
+
+        public boolean isTheoretical() {
+            return theoretical;
+        }
+
+        private final boolean theoretical;
         private final CheckBox box;
         private final Object testClass;
         private final String expectedRuntime;
@@ -484,6 +511,7 @@ public class Controller implements Initializable {
             name = a.name();
             description = a.category();
             expectedRuntime = a.expectedEfficiency();
+            theoretical = a.theoretical();
             counter = 0l;
             if (!m.getReturnType().equals(Long.class) && !m.getReturnType().equals(long.class))
                 throw new IllegalArgumentException("Benchmark item must return Long or long");
@@ -492,7 +520,7 @@ public class Controller implements Initializable {
                             !m.getParameters()[0].getType().equals(long.class)))
                 throw new IllegalArgumentException("Benchmark item must take a Long, long, int, or Integer as input");
             invokable = m;
-            //Constructor c = invokable.getClass().getConstructor();      //TODO: How in the fuck constructor calls?
+            //Constructor c = invokable.getClass().getConstructor();
             //c.setAccessible(true);
             testClass = new BenchmarkDefinitions();
             invokable.setAccessible(true);
@@ -546,7 +574,6 @@ public class Controller implements Initializable {
 
         public Long run(Long intensity) throws InvocationTargetException, IllegalAccessException, InstantiationException {
             counter = intensity;
-            //System.out.println("Invoking run of " + invokable.getName());
             return (Long) invokable.invoke(testClass, intensity);
         }
 

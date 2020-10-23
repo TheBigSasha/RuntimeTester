@@ -122,23 +122,23 @@ public class BenchmarkDefinitions {
         return endTime - startTime;
     }
 
-    @benchmark(name = "traverse list", category = "Math demos", expectedEfficiency = "O(N)")
+    @benchmark(name = "traverse list", category = "Math demos", expectedEfficiency = "O(N)", theoretical = true)
     public Long n(Long size) {
         //System.out.println("Invoked benchmark for size " + size);
         return size * getSimulationSpeed();
     }
 
-    @benchmark(name = "sort", expectedEfficiency = "o(n^2)", category = "Math demos")
+    @benchmark(name = "sort", expectedEfficiency = "o(n^2)", category = "Math demos", theoretical = true)
     public Long nSquared(Long size) {
         return Math.round(Math.pow(size , 2) * getSimulationSpeed());
     }
 
-    @benchmark(name = "fast sorting ", category = "Math demos", expectedEfficiency = "o(n log(n))", description = "This is the speed at which many optimal sorting algorithms run")
+    @benchmark(name = "fast sorting ", category = "Math demos", expectedEfficiency = "o(n log(n))", description = "This is the speed at which many optimal sorting algorithms run", theoretical = true)
     public long nLogN(long size) {
         return (long) (size * Math.log(size)) * getSimulationSpeed();
     }
 
-    @benchmark(name = "superfast", description = " this one is sanic fast", expectedEfficiency = "O(1)", category = "Math demos")
+    @benchmark(name = "superfast", description = " this one is sanic fast", expectedEfficiency = "O(1)", category = "Math demos", theoretical = true)
     public long one(long size) {
         return getSimulationSpeed();
     }

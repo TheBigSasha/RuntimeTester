@@ -16,4 +16,6 @@ public @interface benchmark {
 
     String description() default "";
 
+    boolean theoretical() default false;
+
 }
