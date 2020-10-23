@@ -53,8 +53,9 @@ Here is a demo testing Java's built in sorting algorithm
     public static long arraysSort(long size) {
         ArrayList<Date> dataset = new ArrayList<>();
         for (long i = 0; i < size; i++) {
-            dataset.add(nextDate());              //nextDate() is a method which randonly generates dates
-                                                  //as Date objects in Java
+            dataset.add(nextDate());              //nextDate() is a method which randonly generates Java.Util.Date
+                                                  //objects, for which you can find source code in the demonstration
+                                                  //repository for this library (link below)
         }
         long startTime = System.nanoTime();       //This indicates when the timer on the method starts
         dataset.sort(Date::compareTo);
