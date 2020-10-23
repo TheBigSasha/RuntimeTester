@@ -38,7 +38,7 @@ public static long testMethod(long input){            //All benchmark methods mu
  Here is a sample method which plots the curve of n^2
  ```java
     @benchmark(name = "sort", expectedEfficiency = "o(n^2)", category = "Math demos", theoretical = true)
-    public static long nSquared(long size) {                 //There is no restriction on method name
+    public static long nSquared(long size) {          //There is no restriction on method name
         return Math.round(Math.pow(size , 2));        //The x axis plots size and the y axis plots what is returned
     }
  ```
