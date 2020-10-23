@@ -17,10 +17,10 @@ For a complete example, see the [sample project](https://github.com/TheBigSasha/
 ### 🚀 Launching the GUI
 To launch the GUI with the default demos,
 ```java
-import RuntimeTester.*
+import RuntimeTester.*;
 public class MyClass{
   public static void main(String args[]){
-      MainWindow.launchGrapher(MyClass.getClass());   //the class passed to launchGrapher() is the class which it gets extra test methods from.
+      MainWindow.launchGrapher(MyClass.class);   //the class passed to launchGrapher() is the class which it gets extra test methods from.
   }
 }
 ```
