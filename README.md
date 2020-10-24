@@ -1,30 +1,34 @@
 # Java Library to plot the Time Complexity of methods!
+### Download the latest .jar from the "Releases"
+This release is Windows specific for now, a Mac and Linux version will be compiled and added in a release soon.
 
-## Library Installation
+## 📚 Library Installation
 Add the latest .jar from the releases as a library to your Java IDE:
 
 ### IntelliJ IDEA
-Click on: File -> Project Structure -> Project Settings -> Libraries -> + -> Java -> (navigate to and select RuntimeTester.jar)
+Click on: ```File -> Project Structure -> Project Settings -> Libraries -> + -> Java -> (navigate to and select RuntimeTester.jar)```
 
 ### Eclipse
-Right click on your project -> Build Path -> Libraries -> Classpath -> Add External JARs... -> (navigate to and select RuntimeTester.jar)
+Right click on your project ``` -> Build Path -> Libraries -> Classpath -> Add External JARs... -> (navigate to and select RuntimeTester.jar)```
 
-## Usage
-### Launching the GUI
+## 💻 Usage
+For a complete example, see the [sample project](https://github.com/TheBigSasha/RuntimeTester_DemoProject)
+
+### 🚀 Launching the GUI
 To launch the GUI with the default demos,
 ```java
-import RuntimeTester.*
+import RuntimeTester.*;
 public class MyClass{
   public static void main(String args[]){
-      MainWindow.launchGrapher();
+      MainWindow.launchGrapher(MyClass.class);   //the class passed to launchGrapher() is the class which it gets extra test methods from.
   }
 }
 ```
-### Adding your own method
+### 🧠 Adding your own method
 To add your own test methods, use the @benchmark() annotation, as below:
 ```java
-@benchmark(name = "hello world)
-public static long testMethod(long input){
+@benchmark(name = "hello world")                      //The @benchmark annotation has a required property "name", all others are optional
+public static long testMethod(long input){            //All benchmark methods must be public, take long, return long
     //My-code-here
 }
 ```
@@ -37,12 +41,12 @@ public static long testMethod(long input){
  Here is a sample method which plots the curve of n^2
  ```java
     @benchmark(name = "sort", expectedEfficiency = "o(n^2)", category = "Math demos", theoretical = true)
-    public long nSquared(long size) {
-        return Math.round(Math.pow(size , 2));
+    public static long nSquared(long size) {          //There is no restriction on method name
+        return Math.round(Math.pow(size , 2));        //The x axis plots size and the y axis plots what is returned
     }
  ```
 
-### Benchmarking real methods
+### 🏎️ Benchmarking real methods
 Use the long parameter to indicate the number of items in your data structure
 
 Here is a demo testing Java's built in sorting algorithm
@@ -52,8 +56,9 @@ Here is a demo testing Java's built in sorting algorithm
     public static long arraysSort(long size) {
         ArrayList<Date> dataset = new ArrayList<>();
         for (long i = 0; i < size; i++) {
-            dataset.add(nextDate());              //nextDate() is a method which randonly generates dates
-                                                  //as Date objects in Java
+            dataset.add(nextDate());              //nextDate() is a method which randonly generates Java.Util.Date
+                                                  //objects, for which you can find source code in the demonstration
+                                                  //repository for this library (link below)
         }
         long startTime = System.nanoTime();       //This indicates when the timer on the method starts
         dataset.sort(Date::compareTo);
@@ -70,13 +75,17 @@ The general practice is:
   store an endTime with System.nanoTime();
   return endTime - startTime_
 
-## Screenshots and Expected Behaviour
+## 📷 Screenshots and Expected Behaviour
 
 ![](https://sashaphotoca.files.wordpress.com/2020/10/2020-10-19-12_19_36-runtime-efficiency-wizard-comp250.png)
 ![](https://sashaphotoca.files.wordpress.com/2020/10/2020-10-19-12_18_06-runtime-efficiency-wizard-comp250.png)
 ![](https://sashaphotoca.files.wordpress.com/2020/10/2020-10-19-12_07_26-runtime-efficiency-wizard-comp250.png)
 
-## Contributing, Contact, and Feedback
+## 📁 Cloning as a Gradle project
+### IntelliJ IDEA
+Click on VCS -> get from version control -> paste the link for this repository -> run with Gradle
+
+## 💖 Contributing, Contact, and Feedback
 Dev contact: alexander.aleshchenko@mail.mcgill.ca
 Website: sashaphoto.ca
 Contributing: read contributing.md
