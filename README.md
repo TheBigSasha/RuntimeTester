@@ -20,7 +20,8 @@ To launch the GUI with the default demos,
 import RuntimeTester.*;
 public class MyClass{
   public static void main(String args[]){
-      Visualizer.launch(MyClass.class);   //the class passed to launchGrapher() is the class which it gets extra test methods from.
+      Visualizer.launch(MyClass.class);   //passing a class is OPTIONAL. the program will run
+                                          //with a simple no args call to .launch() MOST OF THE TIME
   }
 }
 ```
