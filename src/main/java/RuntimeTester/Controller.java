@@ -236,6 +236,7 @@ public class Controller implements Initializable {
      */
     public void addBenchmarks(List<Class<?>> testClasses) {
         System.out.println("Classes passed : " + testClasses.toString());
+
         try {
             for(String s : this.getClass().getModule().getPackages()){
                 //System.out.println("package named " + s + " was found in module");
@@ -292,7 +293,7 @@ public class Controller implements Initializable {
             if (!item.getCategory().equals(curCat)) {
                 curCat = item.getCategory();
                 Label l = new Label(curCat);
-              reflexiveButtonArea.getChildren().add(l);
+                reflexiveButtonArea.getChildren().add(l);
             }
             reflexiveButtonArea.getChildren().add(item.getCheckbox());
         }

@@ -5,11 +5,10 @@ plugins {
     id 'java'
     id "com.github.johnrengelman.shadow" version "6.1.0"
     id("maven-publish")
-
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'ca.sashaphoto'
+version '1.2'
 
 repositories {
     mavenCentral()
@@ -35,17 +34,12 @@ sourceSets {
 }
 
 
-mainClassName = "RuntimeTester.MainWindow"
+mainClassName = "RuntimeTester.Visualizer"
 
 jlink {
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
     launcher {
-        name = 'MainWindow'
-    }
-}
-
-jar {
-    manifest {
-        attributes 'Main-Class': 'RuntimeTester.MainWindow'
+        name = 'Visualizer'
     }
 }
 
