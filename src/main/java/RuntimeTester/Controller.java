@@ -235,6 +235,8 @@ public class Controller implements Initializable {
      * Adds all @benchmark tagged methods to the tests.
      */
     public void addBenchmarks(List<Class<?>> testClasses) {
+        System.out.println("Classes passed : " + testClasses.toString());
+
         try {
             for(String s : this.getClass().getModule().getPackages()){
                 //System.out.println("package named " + s + " was found in module");

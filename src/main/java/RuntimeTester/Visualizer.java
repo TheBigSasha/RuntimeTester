@@ -6,16 +6,27 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * The frontend and API for the Runtime Efficiency Tester
  * @author Sasha Aleshchenko - alexander.aleshchenko@mail.mcgill.ca
  * Documentation available at RuntimeTester.github.io
  */
-public class MainWindow extends Application {
+public class Visualizer extends Application {
+    private static final List<String> messages = new ArrayList<>();
+    final double versionNumber = 1.2;
+    static {
+        final String[] hardMessages = new String[]{"made with <3 by sashaphoto.ca", "we are, we are, we are, we are the engineers", "stay safe out there", "always believe in yourself", "you can accomplish anything if you set your mind to it",
+        "chicken chicken chicken chicken chicken chicken chicken chicken chicken chicken", "exeunt", "\uD83D\uDC1D", "also try Minecraft - server: McGill.world", "I believe in you!", "try using a hashmap",
+        "at least it isn't O(N!)", "do you ever feel like a paper bag?", "hello from Montreal", "look at McGill Robotics :)", "sashaphoto.ca for all your photo/video needs", "check out COMP250 @ McGill",};
+        messages.addAll(Arrays.asList(hardMessages));
+        //TODO: query API for more messages
+
+    }
+    private static List<Class<?>> startupClasses = new ArrayList<>();
     private static Controller c;
+
 
     /**
      * Start the application with arguments
@@ -25,10 +36,9 @@ public class MainWindow extends Application {
         launch(args);
     }
 
-    /**
-     * Start up the GUI.
-     */
-    public static void launchGrapher(){
+
+    public static void launch(Class<?> extraTests){
+        startupClasses.add(extraTests);
         launch();
     }
 
@@ -44,8 +54,11 @@ public class MainWindow extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainWindowDesign.fxml"));
         Parent root = fxmlLoader.load();
         c = (Controller) fxmlLoader.getController();
-        c.addBenchmarksFromPackageNames(Collections.singletonList("Tutorial7"));
-        primaryStage.setTitle("Runtime Efficiency Wizard - COMP250");
+        if(!startupClasses.isEmpty()) c.addBenchmarks(startupClasses);
+        //c.addBenchmarksFromPackageNames(Collections.singletonList("Tutorial7"));
+        Random r = new Random(System.currentTimeMillis());
+        String extraTitle = messages.get(r.nextInt(messages.size()-1));
+        primaryStage.setTitle("Runtime Efficiency Wizard " + versionNumber + " - " + extraTitle);
         Scene s = new Scene(root);
         primaryStage.setScene(s);
         primaryStage.setResizable(true);
