@@ -6,11 +6,12 @@ This release is Windows specific for now, a Mac and Linux version will be compil
 Add the latest .jar from the releases as a library to your Java IDE:
 
 ### IntelliJ IDEA
-[Video Guide Playlsit](https://www.youtube.com/watch?v=FBoE2F2152s&list=PLFvevpoGcNCs0p6QQOEASIuCRwDJAeioA&ab_channel=COMP250) Click on: ```File -> Project Structure -> Project Settings -> Libraries -> + -> Java -> (navigate to and select RuntimeTester.jar)```
+#### [Video Guides](https://www.youtube.com/watch?v=FBoE2F2152s&list=PLFvevpoGcNCs0p6QQOEASIuCRwDJAeioA&ab_channel=COMP250) 
+##### Click on: ```File -> Project Structure -> Project Settings -> Libraries -> + -> Java -> (navigate to and select RuntimeTester.jar)```
 
 ### Eclipse
-[Video Guide Playlsit](https://www.youtube.com/watch?v=dofSJCqE9qE&list=PLFvevpoGcNCs5z8OeGYkws02bBrfeonVP&ab_channel=COMP250)
-Right click on your project ``` -> Build Path -> Libraries -> Classpath -> Add External JARs... -> (navigate to and select RuntimeTester.jar)```!
+#### [Video Guides](https://www.youtube.com/watch?v=dofSJCqE9qE&list=PLFvevpoGcNCs5z8OeGYkws02bBrfeonVP&ab_channel=COMP250)
+##### Right click on your project ``` -> Build Path -> Libraries -> Classpath -> Add External JARs... -> (navigate to and select RuntimeTester.jar)```!
 
 ## 💻 Usage
 For a complete example, see the [sample project](https://github.com/TheBigSasha/RuntimeTester_DemoProject)
