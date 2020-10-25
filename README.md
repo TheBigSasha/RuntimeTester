@@ -1,6 +1,6 @@
 # Java Library to plot the Time Complexity of methods!
 ### Download the latest .jar from the "Releases"
-This release is Windows specific for now, a Mac and Linux version will be compiled and added in a release soon.
+You should use the .jar compiled for your operating system (RuntimeTester-windows.jar, RuntimeTester-MacOS.jar, or RuntimeTester-Unix.jar), or compile this project using shadowJAR for your OS if it is not one of those 3.
 
 ## 📚 Library Installation
 Add the latest .jar from the releases as a library to your Java IDE:
