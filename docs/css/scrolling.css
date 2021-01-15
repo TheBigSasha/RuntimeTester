@@ -1,0 +1,264 @@
+:root{
+  --hover-gradient:linear-gradient(90deg,#ff8a00,#e52e71);
+}
+
+html {
+  line-height: 0.9;
+  background: #000000;
+}
+
+iframe {
+  border: none;
+}
+
+.small-item{
+  max-width: 50%;
+}
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.left-half{
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 75%;
+  -ms-transform: translate(-50%, -75%);
+  transform: translate(-50%, -75%);
+}
+
+.fullscreen-left{
+  margin: 0;
+  position: absolute;
+  height: 100%;
+  left: 55%;
+
+
+}
+
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100vh;
+  z-index: 1;
+}
+.section {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  z-index: 2;
+}
+.section > * {
+  width: 50%;
+}
+
+.section lottie-player {
+  position: absolute;
+  top:80%;
+  margin: auto;
+  alignment: center;
+  align-items: center;
+  align-self: center;
+  align-content:  center;
+  float: bottom;
+  display: block;
+  width: 15vmin;
+  height: 15vmin;
+  left: calc(50% - 7.5vmin);
+}
+
+
+
+.section__img{
+  position: relative;
+  display: flex;
+}
+.section__img__inner {
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  top: 0;
+  object-fit: cover;
+
+  /*
+  mix-blend-mode: multiply;
+  */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+}
+.section__body {
+  display: flex;
+  align-items: center;
+  transform: translateX(-45vw);
+  position: relative;
+  z-index: 100;
+}
+.section__text {
+  padding: 0vw;
+}
+
+.section__text h2{
+    display: block;
+  text-shadow: 0 2px 3px rgba(0,0,0,0.5);
+}
+
+
+.section__text h3{
+  display: block;
+  font-size: min(30pt, 2vw);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+
+}
+
+
+
+.section__text p{
+  display: inline-block;
+}
+
+.section__img__inner {
+  filter: blur(4px);
+  opacity: 0;
+  background-position: 50% 40%;
+  transition: filter 0.6s ease, opacity 0.6s ease, background-position 0.8s ease;
+  object-fit: cover;
+
+}
+
+.section iframe {
+  display: none;
+}
+
+.section.active .section__img__inner {
+  opacity: 1;
+  background-position: 50% 50%;
+  filter: blur(0);
+
+
+}
+
+.section.active iframe {
+  display: block;
+}
+h2 {
+  font-size: min(100pt, 7vw);
+  color: white;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+
+.videoWrapper {
+  position: relative;
+  padding-bottom: min(calc(var(--aspect-ratio, .5625) * 100%), 100vh);
+  height: 0;
+
+}
+.videoWrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.videoWrapper video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  alignment: center;
+  align-self: center;
+  align-content: center;
+  justify-content: center;
+  margin-right: auto;
+  height: 100vh;
+  object-fit: cover;
+
+
+  /*position: absolute;*/
+  /*z-index: 1;*/
+  /*top: 50%;*/
+  /*left:50%;*/
+  /*min-width: 100%;*/
+  /*min-height: 100%;*/
+  /*transform: translateX(-50%) translateY(-50%);*/
+}
+
+
+mobile-only{
+  display: none;
+}
+
+
+@media(max-aspect-ratio: 1/1){
+
+  .videoWrapper{
+    display: none;
+  }
+  .section__img__inner {
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    width: 100%;
+    top: 0;
+    object-fit: cover;
+
+    /*
+    mix-blend-mode: multiply;
+    */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+  }
+
+  .section__img{
+
+  }
+
+  .section__body{
+    display: flex;
+    align-items: center;
+    transform: translateX(-45vw);
+    position: relative;
+    z-index: 100;
+  }
+
+  .section__img__inner:hover~.section__body, .section__img__inner:focus-within~.section__body, .section__body:focus-within~.section__img, .section__body:hover~.section__img{
+    filter: blur(5px);
+  }
+
+  .section lottie-player{
+    top:70%
+  }
+
+
+}
+
+@media(max-width: 640px){
+  .section__text h3{
+    font-size: min(60pt, 3vw);
+  }
+
+ h2{
+   font-size: min(100pt, 10vw);
+ }
+
+ video{
+   display: none;
+ }
+
+ mobile-only{
+   display: block;
+ }
+}
+

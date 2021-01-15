@@ -1,0 +1,36 @@
+
+@media(prefers-color-scheme: dark) {
+  html {
+    color: white;
+    background: black;
+
+  }
+
+  .fa{
+    color: white;
+  }
+
+  a{
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;  text-shadow: none;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;  }
+  /*TODO: use colorful-text class for links*/
+
+  titles {
+    background: rgba(0,0,0,0.4);
+  }
+
+  .grad-bg{
+    line-height: 1.0;
+    background: linear-gradient(-45deg, rgba(34, 0, 55,0.4), rgba(9, 23, 40,1)) ;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(10px);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;  text-shadow: none;
+  }
+
+
+}

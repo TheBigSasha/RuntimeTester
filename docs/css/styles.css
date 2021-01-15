@@ -75,9 +75,12 @@
 html{
   font-family: 'Manrope', sans-serif;
   z-index: 1;
-  margin-left: 75pt;
-  margin-right: 75pt;
 
+}
+
+.main{
+  margin-left: 8vw;
+  margin-right: 8vw;
 }
 
 code{
@@ -95,4 +98,108 @@ img{
 
 .images img{
   max-width: 20vw;
+}
+
+.videoWrapper {
+  position: relative;
+  padding-bottom: min(calc(var(--aspect-ratio, .5625) * 100%), 60vh);
+  height: 0;
+}
+.videoWrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+titles {
+  font-weight: 900;
+  background-attachment: fixed;
+  font-style: normal;
+  position: sticky;
+  font-size: max(min(1.3vmin, 30pt), 10pt);
+  top: 0;
+  background: rgba(255,255,255,0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: min(1.4vmin, 140pt);
+  text-align: center;
+  z-index: 20;
+  display: block;
+  align-items: center;
+  justify-content: center;
+}
+
+
+titles br {
+  padding-top: 100px;
+}
+titles h1 {
+  font-weight: 1000;
+display: block;
+}
+
+titles h2{
+  font-weight: 500;
+  display: block;
+
+}
+
+titles div {
+  position: inherit;
+  vertical-align: center;
+  float: bottom;
+  font-weight: 500;
+  display: inline;
+  /*
+  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.5);
+  */
+}
+
+.fa {
+
+  padding: 20px;
+  font-size: 100pt;
+  width: auto;
+  text-align: center;
+  text-decoration: none;
+  background: rgba(0,0,0,0);
+  color: black;
+}
+
+/* Add a hover effect if you want */
+.fa:hover {
+  opacity: 0.7;
+}
+
+.colorful-text{
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;  text-shadow: none;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.grad-bg{
+  line-height: 1.0;
+  background: linear-gradient(-45deg, rgba(222, 173, 255, 0.4), rgb(197, 223, 255)) ;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(10px);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;  text-shadow: none;
+}
+
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
