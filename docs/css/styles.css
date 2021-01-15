@@ -98,6 +98,7 @@ img{
 
 .images img{
   max-width: 20vw;
+  height: auto;
 }
 
 .videoWrapper {
@@ -168,6 +169,11 @@ titles div {
   color: black;
 }
 
+div .fa{
+  font-size: 50pt;   position: fixed;
+  left: 4vw; bottom:30%; padding: 0;
+}
+
 /* Add a hover effect if you want */
 .fa:hover {
   opacity: 0.7;
@@ -201,5 +207,15 @@ titles div {
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+@media(max-width: 600px){
+  div .fa{
+    position: relative;
+    display: inline;
+    left: 0;
+  font-size: 30pt;
+    margin-bottom: 15pt;
   }
 }
