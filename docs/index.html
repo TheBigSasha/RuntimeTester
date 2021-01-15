@@ -18,14 +18,91 @@
 
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/styles.css">
 
   <meta name="theme-color" content="#fafafa">
 </head>
 
 <body>
+<h1 id="java-library-to-plot-the-time-complexity-of-methods-">Java Library to plot the Time Complexity of methods!</h1>
+<h3 id="download-the-latest-jar-from-the-releases-https-github-com-thebigsasha-runtimetester-releases-">Download the latest .jar from the <a href="https://github.com/TheBigSasha/RuntimeTester/releases">&quot;Releases&quot;</a></h3>
+<p>You should use the .jar compiled for your operating system (RuntimeTester-windows.jar, RuntimeTester-MacOS.jar, or RuntimeTester-Unix.jar), or compile this project using shadowJAR for your OS if it is not one of those 3.</p>
+<h2 id="-library-installation">📚 Library Installation</h2>
+<p>Add the latest .jar from the <a href="https://github.com/TheBigSasha/RuntimeTester/releases">releases</a> as a library to your Java IDE:</p>
+<h3 id="intellij-idea">IntelliJ IDEA</h3>
+<h4 id="-video-guides-https-www-youtube-com-watch-v-fboe2f2152s-list-plfvevpogcncs0p6qqoeasiucrwdjaeioa-ab_channel-comp250-"><a href="https://www.youtube.com/watch?v=FBoE2F2152s&amp;list=PLFvevpoGcNCs0p6QQOEASIuCRwDJAeioA&amp;ab_channel=COMP250">Video Guides</a></h4>
+<h5 id="click-on-file-project-structure-project-settings-libraries-java-navigate-to-and-select-runtimetester-jar-">Click on: <code>File -&gt; Project Structure -&gt; Project Settings -&gt; Libraries -&gt; + -&gt; Java -&gt; (navigate to and select RuntimeTester.jar)</code></h5>
+<h3 id="eclipse">Eclipse</h3>
+<h4 id="-video-guides-https-www-youtube-com-watch-v-dofsjcqe9qe-list-plfvevpogcncs5z8oegykws02bbrfeonvp-ab_channel-comp250-"><a href="https://www.youtube.com/watch?v=dofSJCqE9qE&amp;list=PLFvevpoGcNCs5z8OeGYkws02bBrfeonVP&amp;ab_channel=COMP250">Video Guides</a></h4>
+<h5 id="right-click-on-your-project-build-path-libraries-classpath-add-external-jars-navigate-to-and-select-runtimetester-jar-">Right click on your project <code>-&gt; Build Path -&gt; Libraries -&gt; Classpath -&gt; Add External JARs... -&gt; (navigate to and select RuntimeTester.jar)</code>!</h5>
+<h2 id="-usage">💻 Usage</h2>
+<p>For a complete example, see the <a href="https://github.com/TheBigSasha/RuntimeTester_DemoProject">sample project</a></p>
+<h3 id="-launching-the-gui">🚀 Launching the GUI</h3>
+<p>To launch the GUI with the default demos,</p>
+<pre><code class="lang-java"><span class="hljs-meta"><span class="hljs-meta-keyword">import</span> RuntimeTester.*;</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyClass</span></span>{
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(String args[]){
+      Visualizer.launch(MyClass.class);  <span class="hljs-comment">//This line initializes and starts the GUI application. The class(es) you pass as parameters will be scanned for test methods.</span>
+  }
+}
+</code></pre>
+<h3 id="-adding-your-own-method">🧠 Adding your own method</h3>
+<p>To add your own test methods, use the @benchmark() annotation, as below:</p>
+<pre><code class="lang-java"><span class="hljs-meta">@benchmark</span>(name = <span class="hljs-string">"hello world"</span>)                      <span class="hljs-comment">//The @benchmark annotation has a required property "name", all others are optional</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-function"><span class="hljs-keyword">long</span> <span class="hljs-title">testMethod</span><span class="hljs-params">(<span class="hljs-keyword">long</span> input)</span></span>{            <span class="hljs-comment">//All benchmark methods must be public, take long, return long</span>
+    <span class="hljs-comment">//My-code-here</span>
+}
+</code></pre>
+<p><strong>Every custom test method must:</strong>
+  be <em>public</em> so it can be called by the library
+  be <em>static</em> so that it can be called without instantiation
+  <em>return long</em> so that it can be plotted on the y axis
+  <em>take long as the only parameter</em> so it can be plotted on the x axis</p>
+<p> Here is a sample method which plots the curve of n^2</p>
+<pre><code class="lang-java">    @benchmark(name = <span class="hljs-string">"sort"</span>, expectedEfficiency = <span class="hljs-string">"o(n^2)"</span>, category = <span class="hljs-string">"Math demos"</span>, theoretical = <span class="hljs-keyword">true</span>)
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">long</span> nSquared(<span class="hljs-keyword">long</span> <span class="hljs-built_in">size</span>) {          <span class="hljs-comment">//There is no restriction on method name</span>
+        <span class="hljs-keyword">return</span> Math.<span class="hljs-built_in">round</span>(Math.<span class="hljs-built_in">pow</span>(<span class="hljs-built_in">size</span> , <span class="hljs-number">2</span>));        <span class="hljs-comment">//The x axis plots size and the y axis plots what is returned</span>
+    }
+</code></pre>
+<h3 id="-benchmarking-real-methods">🏎️ Benchmarking real methods</h3>
+<p>Use the long parameter to indicate the number of items in your data structure</p>
+<p>Here is a demo testing Java&#39;s built in sorting algorithm</p>
+<pre><code class="lang-java">    @benchmark(name = <span class="hljs-string">"ArrayList.sort"</span>, expectedEfficiency = <span class="hljs-string">"O(n log(n))"</span>, category = <span class="hljs-string">"Java Builtin"</span>)
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">long</span> arraysSort(<span class="hljs-keyword">long</span> <span class="hljs-keyword">size</span>) {
+        ArrayList&lt;Date&gt; dataset = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">long</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">size</span>; i++) {
+            dataset.add(nextDate());              <span class="hljs-comment">//nextDate() is a method which randonly generates Java.Util.Date</span>
+                                                  <span class="hljs-comment">//objects, for which you can find source code in the demonstration</span>
+                                                  <span class="hljs-comment">//repository for this library (link below)</span>
+        }
+        <span class="hljs-keyword">long</span> startTime = System.nanoTime();       <span class="hljs-comment">//This indicates when the timer on the method starts</span>
+        dataset.<span class="hljs-keyword">sort</span>(Date::<span class="hljs-keyword">compareTo</span>);
+        <span class="hljs-keyword">long</span> endTime = System.nanoTime();         <span class="hljs-comment">//This indicates where the timer on the method ends</span>
+        <span class="hljs-keyword">return</span> endTime - startTime;
+    }
+</code></pre>
+<p>The general practice is:</p>
+<p>  <em>Fill your dataset with N items
+  store a startTime with System.nanoTime();
+  Run your method
+  store an endTime with System.nanoTime();
+  return endTime - startTime</em></p>
+<h2 id="-screenshots-and-expected-behaviour">📷 Screenshots and Expected Behaviour</h2>
+<div class="images">
+  <img src="https://sashaphotoca.files.wordpress.com/2020/10/2020-10-19-12_19_36-runtime-efficiency-wizard-comp250.png" alt="">
+  <img src="https://sashaphotoca.files.wordpress.com/2020/10/2020-10-19-12_18_06-runtime-efficiency-wizard-comp250.png" alt="">
+  <img src="https://sashaphotoca.files.wordpress.com/2020/10/2020-10-19-12_07_26-runtime-efficiency-wizard-comp250.png" alt="">
+</div>
+<h2 id="-cloning-as-a-gradle-project">📁 Cloning as a Gradle project</h2>
+<h3 id="intellij-idea">IntelliJ IDEA</h3>
+<p>Click on VCS -&gt; get from version control -&gt; paste the link for this repository -&gt; run with Gradle</p>
+<h2 id="-contributing-contact-and-feedback">💖 Contributing, Contact, and Feedback</h2>
+<p>Dev contact: alexander.aleshchenko@mail.mcgill.ca
+  Website: sashaphoto.ca
+  Contributing: read contributing.md</p>
 
   <!-- Add your site or application content here -->
-  <p>Hello world! This is HTML5 Boilerplate.</p>
+
   <script src="js/vendor/modernizr-3.11.2.min.js"></script>
   <script src="js/plugins.js"></script>
   <script src="js/main.js"></script>
