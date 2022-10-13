@@ -1,27 +1,27 @@
 plugins {
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.8'
-    id 'org.beryx.jlink' version '2.12.0'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'org.beryx.jlink' version '2.25.0'
     id 'java'
-    id "com.github.johnrengelman.shadow" version "6.1.0"
+    id "com.github.johnrengelman.shadow" version "7.1.2"
     id("maven-publish")
 }
 
 group 'ca.sashaphoto'
-version '1.2'
+version '1.4'
 
 repositories {
     mavenCentral()
 }
 
 javafx {
-    version = "15"
+    version = "17"
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'org.reflections', name: 'reflections', version: '0.9.5-RC2'}
+    implementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
+}
 
 sourceSets {
     main {

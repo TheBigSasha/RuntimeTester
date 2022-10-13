@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface benchmark {
+public @interface Benchmark {
     String name();
 
     String category() default "Other";

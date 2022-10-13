@@ -399,8 +399,8 @@ public class Controller implements Initializable {
             Annotation[] annotations = m.getAnnotations();
             if (annotations.length == 0) continue;
             for (Annotation a : annotations) {
-                if (a instanceof benchmark) {
-                    benchmark bm = (benchmark) a;
+                if (a instanceof Benchmark) {
+                    Benchmark bm = (Benchmark) a;
                     BenchmarkItem item = new BenchmarkItem(m, bm);
                     if(!customBenchmarks.containsValue(item)) customBenchmarks.put(item.getCheckbox().getText(), item);
                 }
@@ -519,7 +519,7 @@ public class Controller implements Initializable {
         private String name;
         private String description;
 
-        public BenchmarkItem(Method m, benchmark a) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        public BenchmarkItem(Method m, Benchmark a) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
             name = a.name();
             description = a.category();
             expectedRuntime = a.expectedEfficiency();
