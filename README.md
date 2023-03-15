@@ -69,6 +69,8 @@ Here is a demo testing Java's built in sorting algorithm
     }
 ```
 
+* if your method cannot run on more than an int amount of data, simply downcast the float input to int *
+
 The general practice is:
 
   _Fill your dataset with N items
